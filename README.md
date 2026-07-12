@@ -1,5 +1,7 @@
 # @nightsquawktech/kimai-mcp-server
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/NightSquawk/kimai-mcp-server/badge)](https://scorecard.dev/viewer/?uri=github.com/NightSquawk/kimai-mcp-server)
+
 Model Context Protocol server for Kimai time-tracking instances. Read tools cover the full Kimai API surface; timesheet write tools exist but are guarded behind explicit authorization.
 
 ## API Notes
