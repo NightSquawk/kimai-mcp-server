@@ -1,7 +1,7 @@
 {
   "name": "@nightsquawktech/kimai-mcp-server",
   "version": "0.1.0",
-  "description": "MCP server for read-only access to Kimai time-tracking instances.",
+  "description": "Kimai MCP server for Claude, Cursor, and AI agents: 28 time-tracking tools, timesheet writes guarded by per-call authorization and backups.",
   "keywords": [
     "mcp",
     "mcp-server",
