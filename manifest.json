@@ -1,0 +1,92 @@
+{
+  "manifest_version": "0.4",
+  "name": "kimai-mcp-server",
+  "display_name": "Kimai MCP Server",
+  "version": "0.1.0",
+  "description": "MCP server for self-hosted Kimai time-tracking instances.",
+  "long_description": "Connect Claude to your self-hosted [Kimai](https://www.kimai.org) time-tracking instance. 28 tools covering timesheets, customers, projects, activities, tags, users, teams, invoices, expenses, and tasks. 23 tools are read-only; the 5 timesheet write tools (create, update, stop, restart, duplicate) each require explicit authorization fields and save a JSON backup to the OS temp directory before reporting success.",
+  "author": {
+    "name": "NightSquawk Tech",
+    "email": "hello@nightsquawk.tech",
+    "url": "https://nightsquawk.tech"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NightSquawk/kimai-mcp-server"
+  },
+  "homepage": "https://github.com/NightSquawk/kimai-mcp-server",
+  "documentation": "https://github.com/NightSquawk/kimai-mcp-server#readme",
+  "support": "https://github.com/NightSquawk/kimai-mcp-server/issues",
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {
+        "KIMAI_BASE_URL": "${user_config.base_url}",
+        "KIMAI_API_TOKEN": "${user_config.api_token}",
+        "KIMAI_TIMEOUT_MS": "${user_config.timeout_ms}"
+      }
+    }
+  },
+  "user_config": {
+    "base_url": {
+      "type": "string",
+      "title": "Kimai Base URL",
+      "description": "Your Kimai URL without a trailing slash, for example https://example.kimai.cloud",
+      "required": true
+    },
+    "api_token": {
+      "type": "string",
+      "title": "API Token",
+      "description": "Generate an API token in your Kimai user profile (API Access)",
+      "sensitive": true,
+      "required": true
+    },
+    "timeout_ms": {
+      "type": "number",
+      "title": "Request Timeout (ms)",
+      "description": "HTTP timeout for Kimai API requests, minimum 1000",
+      "default": 30000,
+      "min": 1000,
+      "required": false
+    }
+  },
+  "tools": [
+    { "name": "kimai_get_server_info", "description": "Kimai version, plugins, and timesheet config" },
+    { "name": "kimai_get_current_user", "description": "The user behind the API token" },
+    { "name": "kimai_list_users", "description": "List users" },
+    { "name": "kimai_get_user", "description": "Get one user" },
+    { "name": "kimai_list_customers", "description": "List customers" },
+    { "name": "kimai_get_customer", "description": "Get one customer" },
+    { "name": "kimai_list_projects", "description": "List projects, optionally filtered by customer" },
+    { "name": "kimai_get_project", "description": "Get one project" },
+    { "name": "kimai_list_activities", "description": "List activities, optionally filtered by project" },
+    { "name": "kimai_get_activity", "description": "Get one activity" },
+    { "name": "kimai_list_tags", "description": "Find tags by name" },
+    { "name": "kimai_list_timesheets", "description": "List timesheets with user/customer/project/date/tag filters" },
+    { "name": "kimai_get_timesheet", "description": "Get one timesheet entry" },
+    { "name": "kimai_list_active_timesheets", "description": "Currently running timesheets" },
+    { "name": "kimai_list_recent_timesheets", "description": "Recent timesheet entries" },
+    { "name": "kimai_create_timesheet", "description": "Create a timesheet entry (write, requires authorization fields)" },
+    { "name": "kimai_update_timesheet", "description": "Update a timesheet entry (write, requires authorization fields)" },
+    { "name": "kimai_stop_timesheet", "description": "Stop a running timesheet (write, requires authorization fields)" },
+    { "name": "kimai_restart_timesheet", "description": "Restart a stopped timesheet (write, requires authorization fields)" },
+    { "name": "kimai_duplicate_timesheet", "description": "Duplicate a timesheet entry (write, requires authorization fields)" },
+    { "name": "kimai_list_teams", "description": "List teams" },
+    { "name": "kimai_get_team", "description": "Get one team" },
+    { "name": "kimai_list_invoices", "description": "List invoices" },
+    { "name": "kimai_get_invoice", "description": "Get one invoice" },
+    { "name": "kimai_list_expenses", "description": "List expenses (expenses plugin)" },
+    { "name": "kimai_get_expense", "description": "Get one expense (expenses plugin)" },
+    { "name": "kimai_list_tasks", "description": "List tasks (tasks plugin)" },
+    { "name": "kimai_get_task", "description": "Get one task (tasks plugin)" }
+  ],
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": { "node": ">=20" }
+  },
+  "keywords": ["kimai", "time-tracking", "timesheet", "mcp", "msp", "self-hosted"],
+  "license": "AGPL-3.0-only"
+}
