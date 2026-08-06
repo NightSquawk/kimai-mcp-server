@@ -2,7 +2,7 @@
   "manifest_version": "0.4",
   "name": "kimai-mcp-server",
   "display_name": "Kimai MCP Server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server for self-hosted Kimai time-tracking instances.",
   "long_description": "Connect Claude to your self-hosted [Kimai](https://www.kimai.org) time-tracking instance. 28 tools covering timesheets, customers, projects, activities, tags, users, teams, invoices, expenses, and tasks. 23 tools are read-only; the 5 timesheet write tools (create, update, stop, restart, duplicate) each require explicit authorization fields and save a JSON backup to the OS temp directory before reporting success.",
   "author": {

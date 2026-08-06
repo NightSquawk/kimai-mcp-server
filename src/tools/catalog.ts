@@ -17,7 +17,7 @@ export function registerCatalogTools(server: McpServer, client: KimaiClient): vo
     inputSchema: CustomerCollectionSchema.shape,
     path: () => "/api/customers",
     query: (params) => commonQuery(params),
-    preferredFields: ["id", "name", "number", "company", "visible", "country"],
+    preferredFields: ["id", "name", "number", "company", "visible", "country", "language", "currency"],
     heading: "Kimai Customers"
   });
 
@@ -27,7 +27,7 @@ export function registerCatalogTools(server: McpServer, client: KimaiClient): vo
     description: "Read one Kimai customer from /api/customers/<id>. This tool is read-only.",
     inputSchema: EntityIdSchema.shape,
     path: (params) => `/api/customers/${encodeURIComponent(String(params.id))}`,
-    preferredFields: ["id", "name", "number", "company", "visible", "country"],
+    preferredFields: ["id", "name", "number", "company", "visible", "country", "language", "currency", "invoiceEmail"],
     heading: "Kimai Customer"
   });
 
@@ -85,12 +85,19 @@ export function registerCatalogTools(server: McpServer, client: KimaiClient): vo
   });
 }
 
+// Kimai expects the visibility filter as an integer; the string form returns HTTP 400.
+const VISIBILITY_QUERY: Record<string, number> = {
+  visible: 1,
+  hidden: 2,
+  all: 3
+};
+
 function commonQuery(params: Record<string, unknown>): Record<string, unknown> {
   return {
     term: params.term,
     orderBy: params.order_by,
     order: params.order,
-    visible: params.visible,
+    visible: typeof params.visible === "string" ? VISIBILITY_QUERY[params.visible] : params.visible,
     customer: params.customer,
     project: params.project
   };
