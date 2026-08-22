@@ -1,0 +1,6 @@
+{
+  "operationId": "delete_timesheet",
+  "destructiveReason": "The entry is removed from every future report and invoice. Kimai has no undo, and the pre-delete backup file is the only remaining copy afterwards.",
+  "usageNotes": "To correct a mistaken entry without losing it, use kimai_update_timesheet (PATCH) instead. Delete is for entries that should never have existed, not for entries with wrong values.\n\nAn exported timesheet is locked and cannot be deleted until its exported flag is toggled back off via PATCH /api/timesheets/{id}/export. That lock is deliberate: it is how invoiced time is frozen.",
+  "relatedOperations": ["patch_timesheet", "patch_timesheet_export"]
+}

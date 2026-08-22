@@ -1,0 +1,10 @@
+{
+  "operationId": "delete_customer",
+  "destructiveReason": "Deleting a customer CASCADES: Kimai also deletes every project under it, every activity under those projects, and every timesheet booked against any of them. Billable time that has already been invoiced disappears from all future reports. There is no undo.",
+  "usageNotes": "Prefer marking the customer invisible with patch_customer (visible: false) over deleting it. A hidden customer keeps its history and stops appearing in pickers, which is what 'we stopped working with them' usually means. Delete only when the record was created in error and has no real time behind it.\n\nBefore this runs, kimai_call_endpoint snapshots the projects and every affected timesheet into the backup file and refuses to proceed if that snapshot cannot be written, because afterwards the backup is the only remaining copy.",
+  "tips": [
+    "Check the blast radius first: get_projects with customers[]=<id> and visible=3, then get_timesheets with customers[]=<id> and user=all.",
+    "user=all is required on that timesheet check. Without it you only see your own entries and will underestimate what the delete destroys."
+  ],
+  "relatedOperations": ["patch_customer", "get_projects", "get_timesheets"]
+}

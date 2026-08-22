@@ -1,0 +1,9 @@
+{
+  "operationId": "delete_project",
+  "destructiveReason": "Deleting a project CASCADES: Kimai also deletes every activity under it and every timesheet booked against the project or those activities. There is no undo.",
+  "usageNotes": "Prefer patch_project with visible: false. A finished project that is hidden keeps its billing history and stops cluttering pickers; a deleted one takes its time entries with it.\n\nkimai_call_endpoint snapshots the activities and affected timesheets into the backup before sending the delete.",
+  "tips": [
+    "Check the blast radius first: get_activities with projects[]=<id> and visible=3, then get_timesheets with projects[]=<id> and user=all."
+  ],
+  "relatedOperations": ["patch_project", "get_activities", "get_timesheets"]
+}

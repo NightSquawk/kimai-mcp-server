@@ -1,0 +1,8 @@
+{
+  "operationId": "get_tags_full",
+  "usageNotes": "GET /api/tags/find only filters when a 'name' parameter is supplied. Called with no arguments it returns an EMPTY ARRAY rather than the full tag list, which reads as 'this instance has no tags' when it actually means 'you did not search for anything'. To list every tag, use get_tags (GET /api/tags) instead, which Kimai marks deprecated but which still works in 2.65.0 and is what the curated kimai_list_tags calls.",
+  "tips": [
+    "Confirm a tag's exact spelling here before using it in a timesheet filter. Kimai answers a tags[] filter containing an unknown tag name with HTTP 400, not an empty result."
+  ],
+  "relatedOperations": ["get_tags", "get_timesheets"]
+}

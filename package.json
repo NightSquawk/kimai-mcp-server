@@ -1,7 +1,7 @@
 {
   "name": "@nightsquawktech/kimai-mcp-server",
-  "version": "0.2.0",
-  "description": "Kimai MCP server for Claude, Cursor, and AI agents: 63 time-tracking tools across timesheets, customers, projects, teams, and invoices, with per-call authorization, pre-write backups, and an environment gate on deletes.",
+  "version": "0.3.0",
+  "description": "Kimai MCP server for Claude, Cursor, and AI agents: 16 tools covering the entire Kimai API. 13 curated time-tracking tools plus a 91-endpoint catalog, with per-call authorization, pre-write backups, cascade snapshots, and an environment gate on deletes.",
   "keywords": [
     "mcp",
     "mcp-server",

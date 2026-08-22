@@ -1,0 +1,11 @@
+{
+  "operationId": "get_timesheets",
+  "usageNotes": "Two filter behaviours on this endpoint produce wrong numbers rather than errors, and both have been measured against a live instance.\n\n1. 'user' defaults to the API TOKEN OWNER. A report meant to cover the team returns only your own entries unless you pass user='all', which needs the view_other_timesheet permission. This has already caused a real billing total to be undercounted once.\n\n2. 'tags[]' must be sent as a repeated parameter (tags[]=a&tags[]=b). Sent as a comma-separated string, Kimai accepts it and then IGNORES it: a measured run returned 500 of 500 rows completely unfiltered with a 200 status. kimai_call_endpoint refuses the comma form rather than passing it through.\n\nMore generally, Kimai discards query filters it does not recognise instead of rejecting them, so a misspelled filter name widens your result set silently.",
+  "tips": [
+    "Booleans on this endpoint are integers on the wire: exported and billable take 0 or 1, not true/false.",
+    "Pass size up to 500 and page through; the default page size is 50.",
+    "An unknown tag name in tags[] returns HTTP 400 rather than an empty result. Confirm spelling with get_tags first.",
+    "Use full=1 to get nested customer, project, and user objects instead of bare IDs."
+  ],
+  "relatedOperations": ["get_timesheet", "get_tags", "post_timesheet", "patch_timesheet"]
+}

@@ -1,0 +1,9 @@
+{
+  "operationId": "delete_activity",
+  "destructiveReason": "Deleting an activity also deletes every timesheet booked against it. There is no undo.",
+  "usageNotes": "Prefer patch_activity with visible: false. kimai_call_endpoint snapshots the affected timesheets into the backup before sending the delete.",
+  "tips": [
+    "Check the blast radius first: get_timesheets with activities[]=<id> and user=all."
+  ],
+  "relatedOperations": ["patch_activity", "get_timesheets"]
+}

@@ -5,6 +5,77 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-08-21
+
+Kimai's whole API is now reachable, and the tool list got 76% smaller. Those
+are the same change: the 50 curated tools that existed only to cover an
+endpoint were replaced by a generated catalog of all 91, and the 13 whose
+schema descriptions prevent real, measured failures were kept.
+
+### Added
+
+- **Three catalog tools** -- `kimai_list_endpoints`, `kimai_describe_endpoint`,
+  and `kimai_call_endpoint` -- backed by a generated catalog of every Kimai
+  endpoint. Coverage goes from 81 of 85 live core endpoints to all 85, plus the
+  6 plugin endpoints. The four `/api/actions/*` endpoints 0.2.0 skipped are now
+  included.
+- **Parameter checking on `kimai_call_endpoint`.** Kimai discards query filters
+  it does not understand instead of rejecting them, so a malformed filter
+  returns a `200` with the wrong rows. A comma-separated array filter is now
+  refused with the correct array spelled out (measured: `tags` as `"bar,foo"`
+  returned 500 of 500 rows unfiltered), booleans are converted to the `0|1`
+  form, the `visible`/`hidden`/`all` words are mapped to `1|2|3`, and a
+  parameter an endpoint does not declare produces a warning rather than a
+  silently wider result set. A timesheet read that omits `user` warns that it
+  covers only the token owner.
+- **An enrichment layer** at `src/catalog-kimai/enrichment/`, carrying
+  hand-written guidance that no OpenAPI document contains: the cascade
+  consequences of the three destructive deletes, the `/api/tags/find`
+  empty-result trap, and the timesheet filter behaviour. It survives catalog
+  regeneration, and the assembler reports enrichment whose operation no longer
+  exists.
+- **A two-stage catalog pipeline** (`npm run regen`) ported from
+  arr-mcp-server, plus `scripts/smoke-test.mjs`, which asserts the whole
+  safety chain over real MCP stdio against a closed port, where an escaped
+  request fails loudly instead of passing quietly.
+
+### Changed
+
+- **66 tools became 16** (13 curated + 3 catalog). The `tools/list` payload
+  went from 99,802 bytes to 25,563, roughly 25,000 standing tokens to 6,400.
+  A tool costs context whether or not it is ever called, which is what made
+  one-tool-per-endpoint the wrong shape at this API's size.
+- **Protection is now per operation, not per tool.** A write or delete routed
+  through `kimai_call_endpoint` gets the same authorization fields, the same
+  `KIMAI_ALLOW_DELETE` gate, the same backup, and the same cascade snapshots as
+  the equivalent curated tool did. The generic path is not a way around the
+  guards.
+- `KIMAI_ALLOW_DELETE` now gates deletes on both paths. Its refusal message no
+  longer claims the gate is checked before the per-call authorization fields,
+  because `kimai_call_endpoint` deliberately checks it after them so that the
+  blocker a human has to clear is the one a caller ends on. Both still check it
+  before any network call, which is the guarantee that matters.
+
+### Removed
+
+- **50 curated tools**, all still reachable through `kimai_call_endpoint`:
+  every customer, project, activity, team, tag, user, invoice, rate, comment,
+  meta field, and plugin tool, plus `kimai_restart_timesheet`,
+  `kimai_duplicate_timesheet`, `kimai_toggle_timesheet_export`,
+  `kimai_get_server_info`, and the single-entity `get` tools whose list
+  equivalents were kept.
+- Three endpoints Kimai removed upstream (`POST /api/customers/{id}/team` and
+  the same on projects and activities) are excluded from the catalog rather
+  than advertised. They answer `410 Gone`. Grant team access through
+  `POST /api/teams/`.
+
+### Kept
+
+The 13 curated tools are the ones whose value is in their schema descriptions
+rather than in their existence: all four timesheet reads, timesheet
+create/update/stop/delete, `kimai_list_customers`, `kimai_list_projects`,
+`kimai_list_activities`, `kimai_list_tags`, and `kimai_get_current_user`.
+
 ## [0.2.0] - 2026-08-22
 
 ### Added
