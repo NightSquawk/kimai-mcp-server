@@ -3,11 +3,10 @@ import type { KimaiClient } from "../services/kimai-client.js";
 import {
   ActivityCollectionSchema,
   CustomerCollectionSchema,
-  EntityIdSchema,
   ProjectCollectionSchema,
   TagCollectionSchema
 } from "../schemas/resources.js";
-import { registerCollectionReadTool, registerEntityReadTool } from "./read-tools.js";
+import { registerCollectionReadTool } from "./read-tools.js";
 import { flag, list, visibility } from "./query.js";
 
 const CUSTOMER_FIELDS = ["id", "name", "number", "company", "visible", "billable", "country", "language", "currency"];
@@ -32,15 +31,6 @@ export function registerCatalogTools(server: McpServer, client: KimaiClient): vo
     heading: "Kimai Customers"
   });
 
-  registerEntityReadTool(server, client, {
-    name: "kimai_get_customer",
-    title: "Get Kimai Customer",
-    description: "Read one Kimai customer from /api/customers/<id>. This tool is read-only.",
-    inputSchema: EntityIdSchema.shape,
-    path: (params) => `/api/customers/${encodeURIComponent(String(params.id))}`,
-    preferredFields: [...CUSTOMER_FIELDS, "invoiceEmail", "vatId", "timezone"],
-    heading: "Kimai Customer"
-  });
 
   registerCollectionReadTool(server, client, {
     name: "kimai_list_projects",
@@ -65,15 +55,6 @@ export function registerCatalogTools(server: McpServer, client: KimaiClient): vo
     heading: "Kimai Projects"
   });
 
-  registerEntityReadTool(server, client, {
-    name: "kimai_get_project",
-    title: "Get Kimai Project",
-    description: "Read one Kimai project from /api/projects/<id>. This tool is read-only.",
-    inputSchema: EntityIdSchema.shape,
-    path: (params) => `/api/projects/${encodeURIComponent(String(params.id))}`,
-    preferredFields: PROJECT_FIELDS,
-    heading: "Kimai Project"
-  });
 
   registerCollectionReadTool(server, client, {
     name: "kimai_list_activities",
@@ -95,15 +76,6 @@ export function registerCatalogTools(server: McpServer, client: KimaiClient): vo
     heading: "Kimai Activities"
   });
 
-  registerEntityReadTool(server, client, {
-    name: "kimai_get_activity",
-    title: "Get Kimai Activity",
-    description: "Read one Kimai activity from /api/activities/<id>. This tool is read-only.",
-    inputSchema: EntityIdSchema.shape,
-    path: (params) => `/api/activities/${encodeURIComponent(String(params.id))}`,
-    preferredFields: ACTIVITY_FIELDS,
-    heading: "Kimai Activity"
-  });
 
   /**
    * Kimai splits tags across two endpoints and neither one alone behaves like

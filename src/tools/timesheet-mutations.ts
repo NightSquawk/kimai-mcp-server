@@ -2,15 +2,13 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { KimaiClient } from "../services/kimai-client.js";
 import { writeMutationBackup } from "../services/backups.js";
 import { TimesheetIdActionSchema } from "../schemas/mutations.js";
-import { registerDeleteTool, registerWriteTool } from "./write-tools.js";
+import { registerDeleteTool } from "./delete-tools.js";
 import { formatApiError } from "../services/errors.js";
 import {
   CreateTimesheetSchema,
-  DuplicateTimesheetSchema,
   TimesheetStateChangeSchema,
   UpdateTimesheetSchema,
   type CreateTimesheetInput,
-  type DuplicateTimesheetInput,
   type TimesheetStateChangeInput,
   type UpdateTimesheetInput
 } from "../schemas/mutations.js";
@@ -123,75 +121,7 @@ export function registerTimesheetMutationTools(server: McpServer, client: KimaiC
     async (params: TimesheetStateChangeInput) => runStateChange(client, params, "kimai_stop_timesheet", "stop")
   );
 
-  server.registerTool(
-    "kimai_restart_timesheet",
-    {
-      title: "Restart Kimai Timesheet",
-      description: "Restart a stopped Kimai timesheet. Sensitive edit: call only after explicit human authorization. The existing record is saved to a temp backup file before restarting.",
-      inputSchema: TimesheetStateChangeSchema.shape,
-      annotations: {
-        readOnlyHint: false,
-        destructiveHint: false,
-        idempotentHint: false,
-        openWorldHint: true
-      }
-    },
-    async (params: TimesheetStateChangeInput) => runStateChange(client, params, "kimai_restart_timesheet", "restart")
-  );
 
-  server.registerTool(
-    "kimai_duplicate_timesheet",
-    {
-      title: "Duplicate Kimai Timesheet",
-      description: "Duplicate an existing Kimai timesheet. Sensitive edit: call only after explicit human authorization. The source and created record are saved to a temp backup file.",
-      inputSchema: DuplicateTimesheetSchema.shape,
-      annotations: {
-        readOnlyHint: false,
-        destructiveHint: false,
-        idempotentHint: false,
-        openWorldHint: true
-      }
-    },
-    async (params: DuplicateTimesheetInput) => {
-      try {
-        const sourceEndpoint = `/api/timesheets/${encodeURIComponent(String(params.id))}`;
-        const before = await client.get<unknown>(sourceEndpoint);
-        const response = await client.patch<unknown>(`${sourceEndpoint}/duplicate`);
-        const backupFile = await writeMutationBackup({
-          operation: "kimai_duplicate_timesheet",
-          endpoint: `PATCH ${sourceEndpoint}/duplicate`,
-          authorization_note: params.authorization_note,
-          before: before.data,
-          after: response.data
-        });
-        const data = { backup_file: backupFile, source: before.data, timesheet: response.data };
-        const markdown = [
-          "# Kimai Timesheet Duplicated",
-          "",
-          `Backup file: ${backupFile}`,
-          "",
-          summarizeRecord(response.data, ["id", "user", "project", "activity", "begin", "end", "duration", "description"])
-        ].join("\n");
-
-        return makeToolResponse(data, formatResponse(params.response_format, data, markdown));
-      } catch (error) {
-        const data = { error: formatApiError(error) };
-        return makeToolResponse(data, data.error, true);
-      }
-    }
-  );
-  registerWriteTool(server, client, {
-    name: "kimai_toggle_timesheet_export",
-    title: "Toggle Kimai Timesheet Export State",
-    description:
-      "Toggle the exported flag on a Kimai timesheet via PATCH /api/timesheets/<id>/export. Exported records are locked and can no longer be edited, which is how time is frozen once it has been invoiced. This is a toggle, not a set: calling it twice returns the record to its original state. Sensitive edit: call only after explicit human authorization. The prior record is saved to a temp backup file.",
-    inputSchema: TimesheetIdActionSchema.shape,
-    method: "PATCH",
-    path: (params) => `/api/timesheets/${encodeURIComponent(String(params.id))}/export`,
-    beforePath: (params) => `/api/timesheets/${encodeURIComponent(String(params.id))}`,
-    preferredFields: ["id", "user", "project", "activity", "begin", "end", "duration", "exported"],
-    heading: "Kimai Timesheet Export State Toggled"
-  });
 
   registerDeleteTool(server, client, {
     name: "kimai_delete_timesheet",

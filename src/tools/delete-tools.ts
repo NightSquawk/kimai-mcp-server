@@ -5,23 +5,9 @@ import type { KimaiClient } from "../services/kimai-client.js";
 import { formatApiError } from "../services/errors.js";
 import { writeMutationBackup } from "../services/backups.js";
 import type { ResponseFormat } from "../types.js";
-import { formatResponse, makeToolResponse, summarizeRecord } from "./format.js";
+import { formatResponse, makeToolResponse } from "./format.js";
 
 type ToolParams = Record<string, unknown>;
-
-interface WriteToolOptions {
-  name: string;
-  title: string;
-  description: string;
-  inputSchema: Record<string, z.ZodTypeAny>;
-  method: "POST" | "PATCH";
-  path: (params: ToolParams) => string;
-  body?: (params: ToolParams) => Record<string, unknown> | unknown[];
-  /** Path to read before writing, so the backup captures the prior state. */
-  beforePath?: (params: ToolParams) => string;
-  preferredFields: string[];
-  heading: string;
-}
 
 interface DeleteToolOptions {
   name: string;
@@ -40,65 +26,6 @@ interface DeleteToolOptions {
    */
   cascade?: (client: KimaiClient, params: ToolParams) => Promise<Record<string, unknown>>;
   heading: string;
-}
-
-/**
- * Register a non-destructive write (POST or PATCH).
- *
- * Guarded by the per-call authorization fields that the schema enforces, plus a
- * JSON backup of the prior state and the request. These writes are not behind
- * an environment gate, matching the behavior this server has had since 0.1.0.
- */
-export function registerWriteTool(server: McpServer, client: KimaiClient, options: WriteToolOptions): void {
-  server.registerTool(
-    options.name,
-    {
-      title: options.title,
-      description: options.description,
-      inputSchema: options.inputSchema,
-      annotations: {
-        readOnlyHint: false,
-        destructiveHint: false,
-        idempotentHint: options.method === "PATCH",
-        openWorldHint: true
-      }
-    },
-    async (params: ToolParams) => {
-      try {
-        const endpoint = options.path(params);
-        const request = options.body?.(params);
-        const before = options.beforePath ? (await client.get<unknown>(options.beforePath(params))).data : undefined;
-
-        const response =
-          options.method === "POST"
-            ? await client.post<unknown>(endpoint, request)
-            : await client.patch<unknown>(endpoint, request);
-
-        const backupFile = await writeMutationBackup({
-          operation: options.name,
-          endpoint: `${options.method} ${endpoint}`,
-          authorization_note: String(params.authorization_note ?? ""),
-          before,
-          request,
-          after: response.data
-        });
-
-        const data = { backup_file: backupFile, before, record: response.data };
-        const markdown = [
-          `# ${options.heading}`,
-          "",
-          `Backup file: ${backupFile}`,
-          "",
-          summarizeRecord(response.data, options.preferredFields)
-        ].join("\n");
-
-        return makeToolResponse(data, formatResponse(params.response_format as ResponseFormat, data, markdown));
-      } catch (error) {
-        const data = { error: formatApiError(error) };
-        return makeToolResponse(data, data.error, true);
-      }
-    }
-  );
 }
 
 /**
