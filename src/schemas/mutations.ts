@@ -1,15 +1,5 @@
 import { z } from "zod";
-import { DateTimeSchema, IdSchema, ResponseFormatSchema } from "./common.js";
-
-const AuthorizationSchema = {
-  authorization_confirmed: z
-    .literal(true)
-    .describe("Must be true only after the human user explicitly authorizes this sensitive Kimai edit."),
-  authorization_note: z
-    .string()
-    .min(8)
-    .describe("Short note capturing the user's explicit authorization and reason for the edit.")
-};
+import { AuthorizationSchema, DateTimeSchema, IdSchema, ResponseFormatSchema } from "./common.js";
 
 const TimesheetEditableFields = {
   begin: DateTimeSchema.describe("Timesheet begin timestamp in Kimai HTML5 datetime-local format, e.g. 2026-06-01T09:00:00."),
@@ -74,3 +64,18 @@ export type CreateTimesheetInput = z.infer<typeof CreateTimesheetSchema>;
 export type UpdateTimesheetInput = z.infer<typeof UpdateTimesheetSchema>;
 export type TimesheetStateChangeInput = z.infer<typeof TimesheetStateChangeSchema>;
 export type DuplicateTimesheetInput = z.infer<typeof DuplicateTimesheetSchema>;
+
+/**
+ * Envelope for timesheet operations addressed only by ID: delete and the
+ * export toggle. Kept separate from DuplicateTimesheetSchema so the two can
+ * diverge without a rename.
+ */
+export const TimesheetIdActionSchema = z
+  .object({
+    ...AuthorizationSchema,
+    id: IdSchema,
+    response_format: ResponseFormatSchema
+  })
+  .strict();
+
+export type TimesheetIdActionInput = z.infer<typeof TimesheetIdActionSchema>;

@@ -1,4 +1,4 @@
-export type KimaiMethod = "GET" | "POST" | "PATCH";
+export type KimaiMethod = "GET" | "POST" | "PATCH" | "DELETE";
 
 export type ResponseFormat = "markdown" | "json";
 
@@ -6,6 +6,8 @@ export interface KimaiConfig {
   baseUrl: string;
   apiToken: string;
   timeoutMs: number;
+  /** Whether KIMAI_ALLOW_DELETE opted this process in to irreversible deletes. */
+  allowDelete: boolean;
 }
 
 export interface PaginatedItems<T> {

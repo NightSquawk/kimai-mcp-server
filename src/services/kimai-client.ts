@@ -11,10 +11,21 @@ export interface KimaiResponse<T> {
   };
 }
 
+/**
+ * Kimai request bodies are usually objects, but /api/users/{id}/preferences and
+ * /api/invoices/{id}/custom-fields both read a bare JSON array via
+ * `$request->request->all()`, so arrays must survive to axios unchanged.
+ */
+export type RequestBody = Record<string, unknown> | unknown[];
+
 export class KimaiClient {
   private readonly http: AxiosInstance;
 
+  /** Mirrors KIMAI_ALLOW_DELETE so delete tools can gate before sending. */
+  readonly allowDelete: boolean;
+
   constructor(config: KimaiConfig) {
+    this.allowDelete = config.allowDelete;
     this.http = axios.create({
       baseURL: config.baseUrl,
       timeout: config.timeoutMs,
@@ -47,18 +58,61 @@ export class KimaiClient {
     return this.request<T>("GET", path, { params: pruneUndefined(params) });
   }
 
-  post<T>(path: string, data?: Record<string, unknown>, params?: Record<string, unknown>): Promise<KimaiResponse<T>> {
-    return this.request<T>("POST", path, { data: pruneUndefined(data), params: pruneUndefined(params) });
+  post<T>(path: string, data?: RequestBody, params?: Record<string, unknown>): Promise<KimaiResponse<T>> {
+    return this.request<T>("POST", path, { data: pruneBody(data), params: pruneUndefined(params) });
   }
 
-  patch<T>(path: string, data?: Record<string, unknown>, params?: Record<string, unknown>): Promise<KimaiResponse<T>> {
-    return this.request<T>("PATCH", path, { data: pruneUndefined(data), params: pruneUndefined(params) });
+  patch<T>(path: string, data?: RequestBody, params?: Record<string, unknown>): Promise<KimaiResponse<T>> {
+    return this.request<T>("PATCH", path, { data: pruneBody(data), params: pruneUndefined(params) });
   }
+
+  /**
+   * Kimai answers a successful delete with 204 No Content, so `data` is an
+   * empty string rather than a body. Callers must not treat that as a failure.
+   */
+  delete<T>(path: string, params?: Record<string, unknown>): Promise<KimaiResponse<T>> {
+    return this.request<T>("DELETE", path, { params: pruneUndefined(params) });
+  }
+
+  /**
+   * Fetch a binary payload such as a rendered invoice. Kept separate from
+   * request() because the JSON Accept header and the default response parsing
+   * would corrupt the bytes.
+   */
+  async getBinary(path: string): Promise<{ data: Buffer; contentType?: string; filename?: string }> {
+    const response = await this.http.request<ArrayBuffer>({
+      method: "GET",
+      url: normalizePath(path),
+      responseType: "arraybuffer",
+      headers: { Accept: "*/*" }
+    });
+
+    return {
+      data: Buffer.from(response.data),
+      contentType: headerValue(response.headers["content-type"]),
+      filename: parseFilename(headerValue(response.headers["content-disposition"]))
+    };
+  }
+}
+
+function headerValue(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
+/** Pull a filename out of a Content-Disposition header, if Kimai sent one. */
+function parseFilename(disposition?: string): string | undefined {
+  if (!disposition) return undefined;
+  const match = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(disposition);
+  return match?.[1];
 }
 
 function normalizePath(path: string): string {
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
   return cleanPath.includes("?") ? cleanPath : cleanPath.replace(/\/+$/, "");
+}
+
+function pruneBody(data?: RequestBody): RequestBody | undefined {
+  return Array.isArray(data) ? data : pruneUndefined(data);
 }
 
 function pruneUndefined(params?: Record<string, unknown>): Record<string, unknown> | undefined {

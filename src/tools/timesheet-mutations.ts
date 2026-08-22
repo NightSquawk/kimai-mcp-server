@@ -1,6 +1,8 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { KimaiClient } from "../services/kimai-client.js";
 import { writeMutationBackup } from "../services/backups.js";
+import { TimesheetIdActionSchema } from "../schemas/mutations.js";
+import { registerDeleteTool, registerWriteTool } from "./write-tools.js";
 import { formatApiError } from "../services/errors.js";
 import {
   CreateTimesheetSchema,
@@ -178,6 +180,30 @@ export function registerTimesheetMutationTools(server: McpServer, client: KimaiC
       }
     }
   );
+  registerWriteTool(server, client, {
+    name: "kimai_toggle_timesheet_export",
+    title: "Toggle Kimai Timesheet Export State",
+    description:
+      "Toggle the exported flag on a Kimai timesheet via PATCH /api/timesheets/<id>/export. Exported records are locked and can no longer be edited, which is how time is frozen once it has been invoiced. This is a toggle, not a set: calling it twice returns the record to its original state. Sensitive edit: call only after explicit human authorization. The prior record is saved to a temp backup file.",
+    inputSchema: TimesheetIdActionSchema.shape,
+    method: "PATCH",
+    path: (params) => `/api/timesheets/${encodeURIComponent(String(params.id))}/export`,
+    beforePath: (params) => `/api/timesheets/${encodeURIComponent(String(params.id))}`,
+    preferredFields: ["id", "user", "project", "activity", "begin", "end", "duration", "exported"],
+    heading: "Kimai Timesheet Export State Toggled"
+  });
+
+  registerDeleteTool(server, client, {
+    name: "kimai_delete_timesheet",
+    title: "Delete Kimai Timesheet",
+    description:
+      "Delete a Kimai timesheet entry via DELETE /api/timesheets/<id>. IRREVERSIBLE: Kimai has no undo and the entry is removed from every future report and invoice. Requires KIMAI_ALLOW_DELETE=true on the server plus explicit human authorization. The full record is saved to a temp backup file before the delete, and that file is the only remaining copy afterwards. To correct a mistaken entry without losing it, prefer kimai_update_timesheet.",
+    inputSchema: TimesheetIdActionSchema.shape,
+    path: (params) => `/api/timesheets/${encodeURIComponent(String(params.id))}`,
+    beforePath: (params) => `/api/timesheets/${encodeURIComponent(String(params.id))}`,
+    heading: "Kimai Timesheet Deleted"
+  });
+
 }
 
 async function runStateChange(

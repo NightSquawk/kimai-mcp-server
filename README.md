@@ -139,163 +139,125 @@ File locations: `.mcp.json` in your project root (Claude Code), `claude_desktop_
 | `KIMAI_BASE_URL` | yes | | Your Kimai URL without a trailing slash, e.g. `https://example.kimai.cloud` |
 | `KIMAI_API_TOKEN` | yes | | API token generated in your Kimai user profile (API Access) |
 | `KIMAI_TIMEOUT_MS` | no | `30000` | HTTP timeout for Kimai API requests, minimum 1000 |
+| `KIMAI_ALLOW_DELETE` | no | `false` | Set to `true` to enable the 11 delete tools. While unset or `false`, every delete tool refuses before contacting Kimai. Accepts `true/false/1/0/yes/no/on/off`; any other value fails at startup rather than defaulting to off. |
 
 ## Security & write safety
 
-Kimai credentials: generate an API token in your Kimai user profile. The token inherits that user's permissions, so use a dedicated Kimai user with the smallest role that covers what you need.
+Kimai credentials: generate an API token in your Kimai user profile. The token inherits that user's permissions, so use a dedicated Kimai user with the smallest role that covers what you need. A token belonging to a `ROLE_SUPER_ADMIN` account can reach every tool below, including the cascading deletes.
 
-- **23 of the 28 tools are read-only.** They only issue GET requests and cannot change anything in Kimai.
-- **5 timesheet write tools** exist: `kimai_create_timesheet`, `kimai_update_timesheet`, `kimai_stop_timesheet`, `kimai_restart_timesheet`, `kimai_duplicate_timesheet`. There is no env gate; each call is guarded instead:
-  - Every write requires `authorization_confirmed: true` and an `authorization_note` (8+ characters) recording the user's explicit approval. The tool descriptions instruct the model to call them only after a human authorizes the edit.
-  - Every write saves a JSON backup (previous record, request, and result) to `kimai-mcp-backups` in the OS temp directory, so edits can be audited and manually reverted.
-- No delete tools are exposed.
-- All requests go directly from your machine to your Kimai instance; nothing passes through third parties.
+The server has three tiers, and a tool never moves down a tier without a code change:
+
+- **28 read-only tools.** GET requests only. They cannot change anything in Kimai.
+- **24 write tools** (create, update, stop, restart, duplicate, toggle, assign). Each call requires `authorization_confirmed: true` and an `authorization_note` of 8 characters or more recording the user's approval, and each writes a JSON backup of the prior record, the request, and the result to `kimai-mcp-backups` in the OS temp directory.
+- **11 delete tools.** Everything the write tier requires, plus `KIMAI_ALLOW_DELETE=true`. The environment gate is checked first, before the per-call fields and before any network call, so a server that never opted in cannot be talked into a delete.
+
+### Cascading deletes
+
+Three deletes destroy more than the record you name. Kimai's own API documentation calls this out: deleting a customer "will also delete ALL linked projects, project activities and timesheets".
+
+| Tool | Also deletes |
+|---|---|
+| `kimai_delete_customer` | Every project, activity, and timesheet under that customer |
+| `kimai_delete_project` | Every activity and timesheet under that project |
+| `kimai_delete_activity` | Every timesheet booked against that activity |
+
+Before any of these runs, the server snapshots the dependent records into the backup file, paging through the affected timesheets with `user=all` so another user's entries are not silently omitted. If the snapshot cannot be written, the delete does not happen. To retire a customer without destroying its billing history, use `kimai_update_customer` with `visible: false` instead.
 
 > [!IMPORTANT]
-> The authorization fields are a guardrail, not a security boundary. The env vars in your MCP config are real credentials, and an AI agent with shell access can bypass the MCP tools and call the Kimai API directly with them. If you need hard read-only, enforce it at the source: give the token's Kimai user a role without timesheet edit permissions.
+> The authorization fields and the environment gate are guardrails, not a security boundary. The env vars in your MCP config are real credentials, and an agent with shell access can bypass these tools and call the Kimai API directly. If you need a hard limit, enforce it at the source: give the token's Kimai user a role without delete permissions.
 
 ## Tools
 
+63 tools. Read-only tools are safe to call at any time; write and delete tools require the guards described above.
+
+### Read (28)
+
 ```
-kimai_get_server_info           Kimai version, plugins, and timesheet config
+kimai_get_server_info           Version, plugins, timesheet config, color palette
 kimai_get_current_user          The user behind the API token
-kimai_list_users                List users
+kimai_list_users                List users, with visibility/search/sort filters
 kimai_get_user                  Get one user
 kimai_list_customers            List customers
 kimai_get_customer              Get one customer
-kimai_list_projects             List projects, optionally filtered by customer
+kimai_list_projects             List projects, filtered by customer or date range
 kimai_get_project               Get one project
-kimai_list_activities           List activities, optionally filtered by project
+kimai_list_activities           List activities, filtered by project or globals-only
 kimai_get_activity              Get one activity
-kimai_list_tags                 Find tags by name
-kimai_list_timesheets           List timesheets with user/customer/project/date/tag filters
+kimai_list_tags                 Search tags by name, or list every tag name
+kimai_list_timesheets           List timesheets with the full Kimai filter set
 kimai_get_timesheet             Get one timesheet entry
 kimai_list_active_timesheets    Currently running timesheets
 kimai_list_recent_timesheets    Recent timesheet entries
-kimai_create_timesheet          Create a timesheet entry (write, requires authorization fields)
-kimai_update_timesheet          Update a timesheet entry (write, requires authorization fields)
-kimai_stop_timesheet            Stop a running timesheet (write, requires authorization fields)
-kimai_restart_timesheet         Restart a stopped timesheet (write, requires authorization fields)
-kimai_duplicate_timesheet       Duplicate a timesheet entry (write, requires authorization fields)
 kimai_list_teams                List teams
-kimai_get_team                  Get one team
-kimai_list_invoices             List invoices
+kimai_get_team                  Get one team with members and grants
+kimai_list_invoices             List invoices, filtered by date, customer, or status
 kimai_get_invoice               Get one invoice
+kimai_download_invoice          Save a rendered invoice to a temp file
+kimai_list_rates                Rates on a customer, project, or activity
+kimai_list_comments             Comments on a customer or project
 kimai_list_expenses             List expenses (expenses plugin)
 kimai_get_expense               Get one expense (expenses plugin)
-kimai_list_tasks                List tasks (tasks plugin)
-kimai_get_task                  Get one task (tasks plugin)
+kimai_list_tasks                List tasks (task management plugin)
+kimai_get_task                  Get one task (task management plugin)
+kimai_list_absences             Absences (work contract plugin)
+kimai_list_public_holidays      Configured public holidays (work contract plugin)
+```
+
+### Write (24)
+
+```
+kimai_create_timesheet            kimai_create_customer      kimai_add_rate
+kimai_update_timesheet            kimai_update_customer      kimai_add_comment
+kimai_stop_timesheet              kimai_create_project       kimai_pin_comment
+kimai_restart_timesheet           kimai_update_project       kimai_update_meta_field
+kimai_duplicate_timesheet         kimai_create_activity      kimai_add_team_assignment
+kimai_toggle_timesheet_export     kimai_update_activity      kimai_update_invoice_custom_fields
+kimai_create_team                 kimai_create_tag
+kimai_update_team                 kimai_create_user
+                                  kimai_update_user
+                                  kimai_update_user_preferences
+```
+
+### Delete (11, require `KIMAI_ALLOW_DELETE=true`)
+
+```
+kimai_delete_timesheet     kimai_delete_team          kimai_delete_rate
+kimai_delete_customer *    kimai_delete_tag           kimai_delete_comment
+kimai_delete_project  *    kimai_delete_api_token     kimai_remove_team_assignment
+kimai_delete_activity *                               kimai_delete_export_template
+
+* cascading: see the table above
 ```
 
 ## API coverage
 
-31 operations covered across 28 tools.
+81 of the 85 live endpoints in the Kimai 2.65.0 core API, plus 6 plugin endpoints.
 
-| Category | Operations |
-|---|---|
-| Server & status | 4 |
-| Users | 3 |
-| Customers, projects, activities, tags | 7 |
-| Timesheets (read) | 4 |
-| Timesheets (write) | 5 |
-| Teams & invoices | 4 |
-| Plugins: expenses & tasks | 4 |
+| Controller | Covered | Live | Notes |
+|---|---|---|---|
+| Status & configuration | 5 | 5 | |
+| Users | 7 | 7 | |
+| Customers | 13 | 13 | |
+| Projects | 13 | 13 | |
+| Activities | 9 | 9 | |
+| Timesheets | 12 | 12 | |
+| Teams | 13 | 13 | |
+| Tags | 4 | 4 | |
+| Invoices | 4 | 4 | |
+| Export | 1 | 1 | |
+| Actions | 0 | 4 | `/api/actions/*` returns UI menu links for Kimai's own web interface, which an MCP client has no use for |
+| **Total** | **81** | **85** | |
 
-<details>
-<summary><strong>Server & status</strong> (4 operations)</summary>
+The route table has 88 entries, but three of them (`POST /api/customers/{id}/team`, and the same on projects and activities) were removed upstream and answer 410 Gone. Team access is granted through `kimai_add_team_assignment` instead.
 
-| Method | Path | Tool |
-|---|---|---|
-| GET | `/api/ping` | `kimai_get_server_info` |
-| GET | `/api/version` | `kimai_get_server_info` |
-| GET | `/api/plugins` | `kimai_get_server_info` |
-| GET | `/api/config/timesheet` | `kimai_get_server_info` |
+Plugin endpoints covered: expenses (2), tasks (2), absences (1), public holidays (1). These return a normal Kimai 404 when the matching plugin is not installed.
 
-</details>
+## Notes on Kimai's API
 
-<details>
-<summary><strong>Users</strong> (3 operations)</summary>
+Behaviors that are easy to get wrong, all verified against a live 2.65.0 instance:
 
-| Method | Path | Tool |
-|---|---|---|
-| GET | `/api/users/me` | `kimai_get_current_user` |
-| GET | `/api/users` | `kimai_list_users` |
-| GET | `/api/users/{id}` | `kimai_get_user` |
-
-</details>
-
-<details>
-<summary><strong>Customers, projects, activities, tags</strong> (7 operations)</summary>
-
-| Method | Path | Tool |
-|---|---|---|
-| GET | `/api/customers` | `kimai_list_customers` |
-| GET | `/api/customers/{id}` | `kimai_get_customer` |
-| GET | `/api/projects` | `kimai_list_projects` |
-| GET | `/api/projects/{id}` | `kimai_get_project` |
-| GET | `/api/activities` | `kimai_list_activities` |
-| GET | `/api/activities/{id}` | `kimai_get_activity` |
-| GET | `/api/tags/find` | `kimai_list_tags` |
-
-</details>
-
-<details>
-<summary><strong>Timesheets (read)</strong> (4 operations)</summary>
-
-| Method | Path | Tool |
-|---|---|---|
-| GET | `/api/timesheets` | `kimai_list_timesheets` |
-| GET | `/api/timesheets/{id}` | `kimai_get_timesheet` |
-| GET | `/api/timesheets/active` | `kimai_list_active_timesheets` |
-| GET | `/api/timesheets/recent` | `kimai_list_recent_timesheets` |
-
-</details>
-
-<details>
-<summary><strong>Timesheets (write)</strong> (5 operations)</summary>
-
-| Method | Path | Tool |
-|---|---|---|
-| POST | `/api/timesheets` | `kimai_create_timesheet` |
-| PATCH | `/api/timesheets/{id}` | `kimai_update_timesheet` |
-| PATCH | `/api/timesheets/{id}/stop` | `kimai_stop_timesheet` |
-| PATCH | `/api/timesheets/{id}/restart` | `kimai_restart_timesheet` |
-| PATCH | `/api/timesheets/{id}/duplicate` | `kimai_duplicate_timesheet` |
-
-</details>
-
-<details>
-<summary><strong>Teams & invoices</strong> (4 operations)</summary>
-
-| Method | Path | Tool |
-|---|---|---|
-| GET | `/api/teams` | `kimai_list_teams` |
-| GET | `/api/teams/{id}` | `kimai_get_team` |
-| GET | `/api/invoices` | `kimai_list_invoices` |
-| GET | `/api/invoices/{id}` | `kimai_get_invoice` |
-
-</details>
-
-<details>
-<summary><strong>Plugins: expenses & tasks</strong> (4 operations)</summary>
-
-| Method | Path | Tool |
-|---|---|---|
-| GET | `/api/expenses` | `kimai_list_expenses` |
-| GET | `/api/expenses/{id}` | `kimai_get_expense` |
-| GET | `/api/tasks` | `kimai_list_tasks` |
-| GET | `/api/tasks/{id}` | `kimai_get_task` |
-
-</details>
-
-## Contributing
-
-Contributions and issues are welcome. Please open an issue first before submitting a PR.
-
-## License
-
-AGPL-3.0: free for personal and open-source use. Organizations that cannot comply with the AGPL can purchase a commercial license, and hosted/managed versions are available. See [COMMERCIAL.md](https://github.com/NightSquawk/kimai-mcp-server/blob/v1.0.0/COMMERCIAL.md) or contact hello@nightsquawk.tech.
-
-### Copyright
-
-For copyright concerns or takedown requests, contact hello@nightsquawk.tech.
+- **Timesheets default to the token owner.** `kimai_list_timesheets` returns only your own entries unless you pass `user: "all"`, which needs the `view_other_timesheet` permission. This is the most common cause of an undercounted total.
+- **Tag filters must be exact.** Kimai answers HTTP 400, not an empty result, when a tag name does not exist. Check spelling with `kimai_list_tags`.
+- **Boolean filters are `0|1` on the wire.** `exported`, `active`, and `billable` are booleans on the tool surface and are converted before the request; sending `true` directly to Kimai returns HTTP 400.
+- **Four endpoints do not paginate.** `/api/teams`, `/api/timesheets/active`, `/api/tags`, and the rates and comments sub-resources return everything at once, and the tools report a plain count instead of a page number.
+- **`/api/tags/find` needs a search term.** Called bare it returns an empty list, so `kimai_list_tags` falls back to `/api/tags` when no name is given.
