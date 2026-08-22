@@ -1,0 +1,62 @@
+{
+  "method": "PATCH",
+  "path": "/api/teams/{id}",
+  "operationId": "patch_team",
+  "summary": "Update team",
+  "description": "Update an existing team, you can pass all or just a subset of all attributes (passing members will replace all existing ones)",
+  "tags": [
+    "Team"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Team ID to update",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "string",
+        "description": "The hexadecimal color code (default: auto-calculated by name)"
+      },
+      "members": {
+        "type": "array",
+        "description": "All team members",
+        "items": {
+          "type": "object",
+          "properties": {
+            "teamlead": {
+              "type": "boolean",
+              "description": "Whether the user is a teamlead"
+            },
+            "user": {
+              "type": "integer",
+              "description": "User ID"
+            }
+          }
+        }
+      },
+      "name": {
+        "type": "string",
+        "description": "Name of the team"
+      }
+    },
+    "required": [
+      "name",
+      "members"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the updated team"
+    }
+  }
+}

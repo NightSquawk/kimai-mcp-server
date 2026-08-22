@@ -1,0 +1,53 @@
+{
+  "operationId": "post_activity_rate",
+  "resource": "activities",
+  "category": "Activity",
+  "name": "Add rate for activity",
+  "method": "POST",
+  "path": "/api/activities/{id}/rates",
+  "description": "Add rate for activity",
+  "writeOperation": true,
+  "destructive": false,
+  "paramLocation": "body",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The activity to add the rate for",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "internalRate": {
+        "type": "number",
+        "description": "The internal rate (eg. 10.0 or 10)"
+      },
+      "isFixed": {
+        "type": "boolean"
+      },
+      "rate": {
+        "type": "number",
+        "description": "The rate (eg. 10.5)"
+      },
+      "user": {
+        "type": "integer",
+        "description": "User ID"
+      }
+    },
+    "required": [
+      "rate"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the new created rate"
+    }
+  },
+  "requestSample": "curl -X POST '$KIMAI_BASE_URL/api/activities/{id}/rates' -H 'Authorization: Bearer $KIMAI_API_TOKEN' -H 'Content-Type: application/json' -d '{...}'"
+}

@@ -1,0 +1,29 @@
+{
+  "method": "DELETE",
+  "path": "/api/teams/{id}",
+  "operationId": "delete_team",
+  "summary": "Delete team",
+  "description": null,
+  "tags": [
+    "Team"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Team ID to delete",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Empty"
+    }
+  }
+}

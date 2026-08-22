@@ -1,0 +1,80 @@
+{
+  "method": "PATCH",
+  "path": "/api/timesheets/{id}",
+  "operationId": "patch_timesheet",
+  "summary": "Update timesheet",
+  "description": "Update timesheet, you can pass all or just a subset of the attributes.",
+  "tags": [
+    "Timesheet"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Timesheet ID to update",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "activity": {
+        "type": "integer",
+        "description": "Activity ID"
+      },
+      "begin": {
+        "type": "string",
+        "format": "date-time",
+        "description": "If no begin date-time is set, the users current timestamp will be used"
+      },
+      "billable": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "end": {
+        "type": "string",
+        "format": "date-time",
+        "description": "If no end date-time is set, the timesheet will be running"
+      },
+      "exported": {
+        "type": "boolean"
+      },
+      "fixedRate": {
+        "type": "number",
+        "description": "Fixed rate"
+      },
+      "hourlyRate": {
+        "type": "number",
+        "description": "Hourly rate"
+      },
+      "project": {
+        "type": "integer",
+        "description": "Project ID"
+      },
+      "tags": {
+        "type": "string",
+        "description": "Comma separated list of tags"
+      },
+      "user": {
+        "type": "integer",
+        "description": "User ID"
+      }
+    },
+    "required": [
+      "project",
+      "activity"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the updated timesheet"
+    }
+  }
+}

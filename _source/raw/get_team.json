@@ -1,0 +1,28 @@
+{
+  "method": "GET",
+  "path": "/api/teams/{id}",
+  "operationId": "get_team",
+  "summary": "Fetch team",
+  "description": null,
+  "tags": [
+    "Team"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the team"
+    }
+  }
+}

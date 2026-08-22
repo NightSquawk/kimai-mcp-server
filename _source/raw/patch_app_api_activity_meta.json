@@ -1,0 +1,43 @@
+{
+  "method": "PATCH",
+  "path": "/api/activities/{id}/meta",
+  "operationId": "patch_app_api_activity_meta",
+  "summary": "Update activity custom-field",
+  "description": null,
+  "tags": [
+    "Activity"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Activity record ID to set the meta-field value for",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "value": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "name",
+      "value"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Sets the value of an existing/configured meta-field. You cannot create unknown meta-fields, if the given name is not a configured meta-field, this will return an exception."
+    }
+  }
+}

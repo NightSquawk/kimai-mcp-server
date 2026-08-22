@@ -1,0 +1,75 @@
+{
+  "method": "GET",
+  "path": "/api/invoices",
+  "operationId": "get_invoices",
+  "summary": "Fetch invoices",
+  "description": null,
+  "tags": [
+    "Invoice"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [
+    {
+      "name": "begin",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Only invoices created at or after this date-time will be included (format: HTML5 datetime-local, e.g. YYYY-MM-DDThh:mm:ss)",
+      "default": null
+    },
+    {
+      "name": "end",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Only invoices created before or at this date-time will be included (format: HTML5 datetime-local, e.g. YYYY-MM-DDThh:mm:ss)",
+      "default": null
+    },
+    {
+      "name": "customers[]",
+      "type": "array",
+      "required": false,
+      "in": "query",
+      "description": "List of customer IDs to filter, e.g.: customers[]=1&customers[]=2",
+      "pattern": "\\d+",
+      "items": [],
+      "default": []
+    },
+    {
+      "name": "status[]",
+      "type": "array",
+      "required": false,
+      "in": "query",
+      "description": "Invoice status: pending, paid, canceled, new. Default: all",
+      "pattern": "pending|paid|canceled|new",
+      "items": [],
+      "default": []
+    },
+    {
+      "name": "page",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "The page to display, renders a 404 if not found (default: 1)",
+      "pattern": "\\d+",
+      "default": null
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "The amount of entries for each page (default: 50)",
+      "pattern": "\\d+",
+      "default": null
+    }
+  ],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of invoices"
+    }
+  }
+}

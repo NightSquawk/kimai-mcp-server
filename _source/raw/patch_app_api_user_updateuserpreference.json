@@ -1,0 +1,45 @@
+{
+  "method": "PATCH",
+  "path": "/api/users/{id}/preferences",
+  "operationId": "patch_app_api_user_updateuserpreference",
+  "summary": "Update user preferences",
+  "description": null,
+  "tags": [
+    "User"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "User ID to set the custom-field value for",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    }
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Sets the value of a configured preference. You cannot create unknown or updated disabled preferences."
+    }
+  }
+}

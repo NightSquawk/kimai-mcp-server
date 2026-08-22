@@ -1,0 +1,28 @@
+{
+  "method": "GET",
+  "path": "/api/customers/{id}",
+  "operationId": "get_customer",
+  "summary": "Fetch customer",
+  "description": null,
+  "tags": [
+    "Customer"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns one customer entity"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "operationId": "get_active_timesheet",
+  "resource": "timesheets",
+  "category": "Timesheet",
+  "name": "Fetch active timesheets",
+  "method": "GET",
+  "path": "/api/timesheets/active",
+  "description": "Fetch active timesheets",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of active timesheets for the current user"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/timesheets/active' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

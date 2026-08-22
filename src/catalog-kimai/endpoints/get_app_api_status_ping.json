@@ -1,0 +1,22 @@
+{
+  "operationId": "get_app_api_status_ping",
+  "resource": "ping",
+  "category": "Default",
+  "name": "Testing route for the API",
+  "method": "GET",
+  "path": "/api/ping",
+  "description": "Testing route for the API",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "A simple route that returns a 'pong', which you can use for testing the API"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/ping' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

@@ -1,0 +1,29 @@
+{
+  "method": "DELETE",
+  "path": "/api/users/api-token/{id}",
+  "operationId": "delete_api_token",
+  "summary": "Delete API token",
+  "description": "This ONLY works if the given API token exists and belongs to the current user",
+  "tags": [
+    "User"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The API token ID to remove",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Success if the token could be deleted."
+    }
+  }
+}

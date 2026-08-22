@@ -1,0 +1,84 @@
+{
+  "method": "GET",
+  "path": "/api/activities",
+  "operationId": "get_activities",
+  "summary": "Fetch activities",
+  "description": null,
+  "tags": [
+    "Activity"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [
+    {
+      "name": "project",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Project ID to filter activities",
+      "pattern": "\\d+",
+      "default": null
+    },
+    {
+      "name": "projects[]",
+      "type": "array",
+      "required": false,
+      "in": "query",
+      "description": "List of project IDs to filter activities, e.g.: projects[]=1&projects[]=2",
+      "pattern": "\\d+",
+      "items": [],
+      "default": []
+    },
+    {
+      "name": "visible",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Visibility status to filter activities: 1=visible, 2=hidden, 3=all",
+      "pattern": "1|2|3",
+      "default": 1
+    },
+    {
+      "name": "globals",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Use if you want to fetch only global activities. Allowed values: 0|1 (default: 0 for false)",
+      "pattern": "0|1|true|false",
+      "default": null
+    },
+    {
+      "name": "orderBy",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "The field by which results will be ordered. Allowed values: id, name, project (default: name)",
+      "pattern": "id|name|project",
+      "default": null
+    },
+    {
+      "name": "order",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "The result order. Allowed values: ASC, DESC (default: ASC)",
+      "pattern": "ASC|DESC",
+      "default": null
+    },
+    {
+      "name": "term",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Free search term",
+      "default": null
+    }
+  ],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of activities"
+    }
+  }
+}

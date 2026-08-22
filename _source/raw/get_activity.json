@@ -1,0 +1,29 @@
+{
+  "method": "GET",
+  "path": "/api/activities/{id}",
+  "operationId": "get_activity",
+  "summary": "Fetch activity",
+  "description": null,
+  "tags": [
+    "Activity"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Activity ID to fetch",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns one activity entity"
+    }
+  }
+}

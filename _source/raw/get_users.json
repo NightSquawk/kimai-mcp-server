@@ -1,0 +1,65 @@
+{
+  "method": "GET",
+  "path": "/api/users",
+  "operationId": "get_users",
+  "summary": "Fetch users",
+  "description": null,
+  "tags": [
+    "User"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [
+    {
+      "name": "visible",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Visibility status to filter users: 1=visible, 2=hidden, 3=all",
+      "pattern": "1|2|3",
+      "default": 1
+    },
+    {
+      "name": "orderBy",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "The field by which results will be ordered. Allowed values: id, username, alias, email (default: username)",
+      "pattern": "id|username|alias|email",
+      "default": null
+    },
+    {
+      "name": "order",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "The result order. Allowed values: ASC, DESC (default: ASC)",
+      "pattern": "ASC|DESC",
+      "default": null
+    },
+    {
+      "name": "term",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Free search term",
+      "default": null
+    },
+    {
+      "name": "full",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Allows to fetch full objects including subresources. Allowed values: 0|1|false|true (default: false)",
+      "pattern": "0|1|true|false",
+      "default": null
+    }
+  ],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of users. Required permission: view_user"
+    }
+  }
+}

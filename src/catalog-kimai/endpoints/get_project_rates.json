@@ -1,0 +1,31 @@
+{
+  "operationId": "get_project_rates",
+  "resource": "projects",
+  "category": "Project",
+  "name": "Fetch rates for project",
+  "method": "GET",
+  "path": "/api/projects/{id}/rates",
+  "description": "Fetch rates for project",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The project whose rates will be returned",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of project rate entities"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/projects/{id}/rates' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

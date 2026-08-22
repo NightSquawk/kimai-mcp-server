@@ -1,0 +1,30 @@
+{
+  "operationId": "get_project",
+  "resource": "projects",
+  "category": "Project",
+  "name": "Fetch project",
+  "method": "GET",
+  "path": "/api/projects/{id}",
+  "description": "Fetch project",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns one project entity"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/projects/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

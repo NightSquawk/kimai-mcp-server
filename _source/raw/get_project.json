@@ -1,0 +1,28 @@
+{
+  "method": "GET",
+  "path": "/api/projects/{id}",
+  "operationId": "get_project",
+  "summary": "Fetch project",
+  "description": null,
+  "tags": [
+    "Project"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns one project entity"
+    }
+  }
+}

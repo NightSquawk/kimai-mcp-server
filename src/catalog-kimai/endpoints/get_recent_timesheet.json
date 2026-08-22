@@ -1,0 +1,40 @@
+{
+  "operationId": "get_recent_timesheet",
+  "resource": "timesheets",
+  "category": "Timesheet",
+  "name": "Fetch recent user activities",
+  "method": "GET",
+  "path": "/api/timesheets/recent",
+  "description": "Fetch recent user activities",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [],
+  "params": [
+    {
+      "name": "begin",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Only records started at or after this date will be included. Default: today - 1 year (format: HTML5 datetime-local, e.g. YYYY-MM-DDThh:mm:ss)",
+      "default": null
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "The amount of entries (default: 10)",
+      "pattern": "\\d+",
+      "default": null
+    }
+  ],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of recent user activities (always the latest entry of a unique working set grouped by customer, project and activity)"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/timesheets/recent' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

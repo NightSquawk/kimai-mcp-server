@@ -1,0 +1,31 @@
+{
+  "operationId": "delete_team",
+  "resource": "teams",
+  "category": "Team",
+  "name": "Delete team",
+  "method": "DELETE",
+  "path": "/api/teams/{id}",
+  "description": "Delete team",
+  "writeOperation": true,
+  "destructive": true,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Team ID to delete",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Empty"
+    }
+  },
+  "requestSample": "curl -X DELETE '$KIMAI_BASE_URL/api/teams/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

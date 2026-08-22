@@ -1,0 +1,45 @@
+{
+  "operationId": "get_timesheet_actions",
+  "resource": "actions",
+  "category": "Actions",
+  "name": "Fetch item actions for Timesheet",
+  "method": "GET",
+  "path": "/api/actions/timesheet/{id}/{view}/{locale}",
+  "description": "Fetch item actions for Timesheet",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Timesheet ID to fetch",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "view",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "View to display the actions at (e.g. index, custom)"
+    },
+    {
+      "name": "locale",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Language to translate the action title to (e.g. de, en)"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns item actions for the timesheet"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/actions/timesheet/{id}/{view}/{locale}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

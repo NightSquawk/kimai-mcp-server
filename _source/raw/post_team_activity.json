@@ -1,0 +1,37 @@
+{
+  "method": "POST",
+  "path": "/api/teams/{id}/activities/{activityId}",
+  "operationId": "post_team_activity",
+  "summary": "Grant activity access",
+  "description": "The team is granted access to the activity.",
+  "tags": [
+    "Team"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team that is granted access",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "activityId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The activity to grant acecess to (Activity ID)",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the team including the activity"
+    }
+  }
+}

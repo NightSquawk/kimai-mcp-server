@@ -1,0 +1,30 @@
+{
+  "operationId": "get_download_invoice",
+  "resource": "invoices",
+  "category": "Invoice",
+  "name": "Download invoice",
+  "method": "GET",
+  "path": "/api/invoices/{id}/download",
+  "description": "Download invoice",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Downloads the invoice document as an attachment. The content type depends on the configured invoice renderer."
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/invoices/{id}/download' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

@@ -1,0 +1,29 @@
+{
+  "method": "DELETE",
+  "path": "/api/projects/{id}",
+  "operationId": "delete_project",
+  "summary": "Delete project",
+  "description": "[DANGER] This will also delete ALL linked activities and timesheets.\nDo you want to use `PATCH` instead and mark it as inactive with `{visible: false}`?",
+  "tags": [
+    "Project"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Project ID to delete",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Delete one project"
+    }
+  }
+}

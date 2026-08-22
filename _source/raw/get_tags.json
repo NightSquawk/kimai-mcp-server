@@ -1,0 +1,29 @@
+{
+  "method": "GET",
+  "path": "/api/tags",
+  "operationId": "get_tags",
+  "summary": "Deprecated: Fetch tags as strings",
+  "description": null,
+  "tags": [
+    "Tag"
+  ],
+  "deprecated": true,
+  "pathParams": [],
+  "params": [
+    {
+      "name": "name",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Search term to filter tag list",
+      "default": null
+    }
+  ],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "DEPRECATED: Returns existing tags as string array"
+    }
+  }
+}

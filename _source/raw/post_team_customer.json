@@ -1,0 +1,37 @@
+{
+  "method": "POST",
+  "path": "/api/teams/{id}/customers/{customerId}",
+  "operationId": "post_team_customer",
+  "summary": "Grant customer access",
+  "description": "The team is granted access to the customer.",
+  "tags": [
+    "Team"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team that is granted access",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "customerId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The customer to grant acecess to (Customer ID)",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the team including the customer"
+    }
+  }
+}

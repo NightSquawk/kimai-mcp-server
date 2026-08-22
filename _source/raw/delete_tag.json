@@ -1,0 +1,28 @@
+{
+  "method": "DELETE",
+  "path": "/api/tags/{id}",
+  "operationId": "delete_tag",
+  "summary": "Delete tag",
+  "description": null,
+  "tags": [
+    "Tag"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Tag ID to delete"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "HTTP code 204 for a successful delete"
+    }
+  }
+}

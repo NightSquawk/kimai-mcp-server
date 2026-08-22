@@ -1,0 +1,37 @@
+{
+  "method": "PATCH",
+  "path": "/api/projects/{id}/comments/{comment}/pin",
+  "operationId": "patch_toggle_project_comment_pin",
+  "summary": "Pin project comment",
+  "description": "This toggles the `pinned` status of the given comment.",
+  "tags": [
+    "Project"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The project whose comment will be pinned or unpinned",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "comment",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The comment whose pinned status will be toggled",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the updated project comment"
+    }
+  }
+}

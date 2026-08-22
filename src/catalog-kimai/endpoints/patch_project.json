@@ -1,0 +1,105 @@
+{
+  "operationId": "patch_project",
+  "resource": "projects",
+  "category": "Project",
+  "name": "Update project",
+  "method": "PATCH",
+  "path": "/api/projects/{id}",
+  "description": "Update an existing project, you can pass all or just a subset of all attributes",
+  "writeOperation": true,
+  "destructive": false,
+  "paramLocation": "body",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Project ID to update",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "billable": {
+        "type": "boolean"
+      },
+      "budget": {
+        "description": "The money budget"
+      },
+      "budgetType": {
+        "type": "string",
+        "enum": [
+          "month"
+        ],
+        "description": "The type of budget. Only submit if you want to use a monthly budget."
+      },
+      "color": {
+        "type": "string",
+        "description": "The hexadecimal color code (default: auto-calculated by name)"
+      },
+      "comment": {
+        "type": "string"
+      },
+      "customer": {
+        "type": "integer",
+        "description": "Customer ID"
+      },
+      "end": {
+        "type": "string",
+        "format": "date"
+      },
+      "globalActivities": {
+        "type": "boolean"
+      },
+      "invoiceText": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "number": {
+        "type": "string"
+      },
+      "orderDate": {
+        "type": "string",
+        "format": "date"
+      },
+      "orderNumber": {
+        "type": "string"
+      },
+      "start": {
+        "type": "string",
+        "format": "date"
+      },
+      "teams": {
+        "type": "array",
+        "description": "Array of Team IDs",
+        "items": {
+          "type": "integer",
+          "description": "Team IDs"
+        }
+      },
+      "timeBudget": {
+        "type": "string",
+        "description": "Duration - supports various formats: https://www.kimai.org/documentation/duration-format.html"
+      },
+      "visible": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "name",
+      "customer"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the updated project"
+    }
+  },
+  "requestSample": "curl -X PATCH '$KIMAI_BASE_URL/api/projects/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN' -H 'Content-Type: application/json' -d '{...}'"
+}

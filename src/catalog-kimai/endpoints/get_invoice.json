@@ -1,0 +1,30 @@
+{
+  "operationId": "get_invoice",
+  "resource": "invoices",
+  "category": "Invoice",
+  "name": "Fetch invoice",
+  "method": "GET",
+  "path": "/api/invoices/{id}",
+  "description": "Fetch invoice",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns one invoice"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/invoices/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

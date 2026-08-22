@@ -1,0 +1,45 @@
+{
+  "method": "PATCH",
+  "path": "/api/invoices/{id}/custom-fields",
+  "operationId": "patch_app_api_invoice_updatemetafields",
+  "summary": "Update invoice custom-fields",
+  "description": null,
+  "tags": [
+    "Invoice"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Invoice ID to set the custom-fields for",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    }
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Sets the value of configured custom-fields. You cannot create unknown custom-fields."
+    }
+  }
+}

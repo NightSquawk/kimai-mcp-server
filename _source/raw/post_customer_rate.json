@@ -1,0 +1,51 @@
+{
+  "method": "POST",
+  "path": "/api/customers/{id}/rates",
+  "operationId": "post_customer_rate",
+  "summary": "Add rate for customer",
+  "description": null,
+  "tags": [
+    "Customer"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The customer to add the rate for",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "internalRate": {
+        "type": "number",
+        "description": "The internal rate (eg. 10.0 or 10)"
+      },
+      "isFixed": {
+        "type": "boolean"
+      },
+      "rate": {
+        "type": "number",
+        "description": "The rate (eg. 10.5)"
+      },
+      "user": {
+        "type": "integer",
+        "description": "User ID"
+      }
+    },
+    "required": [
+      "rate"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the new created rate"
+    }
+  }
+}

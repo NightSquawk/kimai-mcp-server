@@ -1,0 +1,41 @@
+{
+  "method": "GET",
+  "path": "/api/public-holidays",
+  "operationId": "get_public_holidays",
+  "summary": "List public holidays",
+  "description": "Returns the configured public holidays for a date range. Requires the Kimai Work Contract plugin. Not paginated. HAND-AUTHORED: see get_expenses for what that means about parameter fidelity.",
+  "tags": [
+    "Absence"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [
+    {
+      "name": "begin",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Range start as an HTML5 local date-time.",
+      "format": "date-time"
+    },
+    {
+      "name": "end",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Range end as an HTML5 local date-time.",
+      "format": "date-time"
+    }
+  ],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of public holiday entities"
+    },
+    "404": {
+      "description": "Work Contract plugin is not installed on this instance"
+    }
+  },
+  "pluginOnly": true
+}

@@ -1,0 +1,32 @@
+{
+  "operationId": "get_tags",
+  "resource": "tags",
+  "category": "Tag",
+  "name": "Deprecated: Fetch tags as strings",
+  "method": "GET",
+  "path": "/api/tags",
+  "description": "Deprecated: Fetch tags as strings",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [],
+  "params": [
+    {
+      "name": "name",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Search term to filter tag list",
+      "default": null
+    }
+  ],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "DEPRECATED: Returns existing tags as string array"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/tags' -H 'Authorization: Bearer $KIMAI_API_TOKEN'",
+  "deprecated": true
+}

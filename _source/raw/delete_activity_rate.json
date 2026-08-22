@@ -1,0 +1,37 @@
+{
+  "method": "DELETE",
+  "path": "/api/activities/{id}/rates/{rateId}",
+  "operationId": "delete_activity_rate",
+  "summary": "Delete rate for activity",
+  "description": null,
+  "tags": [
+    "Activity"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The activity whose rate will be removed",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "rateId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The rate to remove",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Returns no content: 204 on successful delete"
+    }
+  }
+}

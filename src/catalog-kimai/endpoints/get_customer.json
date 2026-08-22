@@ -1,0 +1,30 @@
+{
+  "operationId": "get_customer",
+  "resource": "customers",
+  "category": "Customer",
+  "name": "Fetch customer",
+  "method": "GET",
+  "path": "/api/customers/{id}",
+  "description": "Fetch customer",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns one customer entity"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/customers/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

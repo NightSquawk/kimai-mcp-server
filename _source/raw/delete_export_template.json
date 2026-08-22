@@ -1,0 +1,29 @@
+{
+  "method": "DELETE",
+  "path": "/api/export/{id}",
+  "operationId": "delete_export_template",
+  "summary": "Delete export template",
+  "description": null,
+  "tags": [
+    "Export"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Export template ID to delete",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Delete export template"
+    }
+  }
+}

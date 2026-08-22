@@ -1,0 +1,77 @@
+{
+  "operationId": "post_activity",
+  "resource": "activities",
+  "category": "Activity",
+  "name": "Create activity",
+  "method": "POST",
+  "path": "/api/activities",
+  "description": "Creates a new activity and returns it afterwards",
+  "writeOperation": true,
+  "destructive": false,
+  "paramLocation": "body",
+  "pathParams": [],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "billable": {
+        "type": "boolean"
+      },
+      "budget": {
+        "description": "The money budget"
+      },
+      "budgetType": {
+        "type": "string",
+        "enum": [
+          "month"
+        ],
+        "description": "The type of budget. Only submit if you want to use a monthly budget."
+      },
+      "color": {
+        "type": "string",
+        "description": "The hexadecimal color code (default: auto-calculated by name)"
+      },
+      "comment": {
+        "type": "string"
+      },
+      "invoiceText": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "number": {
+        "type": "string"
+      },
+      "project": {
+        "type": "integer",
+        "description": "Project ID"
+      },
+      "teams": {
+        "type": "array",
+        "description": "Array of Team IDs",
+        "items": {
+          "type": "integer",
+          "description": "Team IDs"
+        }
+      },
+      "timeBudget": {
+        "type": "string",
+        "description": "Duration - supports various formats: https://www.kimai.org/documentation/duration-format.html"
+      },
+      "visible": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "name"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the new created activity"
+    }
+  },
+  "requestSample": "curl -X POST '$KIMAI_BASE_URL/api/activities' -H 'Authorization: Bearer $KIMAI_API_TOKEN' -H 'Content-Type: application/json' -d '{...}'"
+}

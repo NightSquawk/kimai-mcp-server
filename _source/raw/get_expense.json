@@ -1,0 +1,32 @@
+{
+  "method": "GET",
+  "path": "/api/expenses/{id}",
+  "operationId": "get_expense",
+  "summary": "Fetch one expense",
+  "description": "Returns one expense record. Requires the Kimai Expenses plugin. HAND-AUTHORED: see get_expenses for what that means about parameter fidelity.",
+  "tags": [
+    "Expense"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "integer",
+      "required": true,
+      "in": "path",
+      "description": "Expense ID to fetch"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns one expense entity"
+    },
+    "404": {
+      "description": "Expense not found, or the Expenses plugin is not installed"
+    }
+  },
+  "pluginOnly": true
+}

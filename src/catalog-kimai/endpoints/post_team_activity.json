@@ -1,0 +1,39 @@
+{
+  "operationId": "post_team_activity",
+  "resource": "teams",
+  "category": "Team",
+  "name": "Grant activity access",
+  "method": "POST",
+  "path": "/api/teams/{id}/activities/{activityId}",
+  "description": "The team is granted access to the activity.",
+  "writeOperation": true,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team that is granted access",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "activityId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The activity to grant acecess to (Activity ID)",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the team including the activity"
+    }
+  },
+  "requestSample": "curl -X POST '$KIMAI_BASE_URL/api/teams/{id}/activities/{activityId}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

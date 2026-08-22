@@ -1,0 +1,37 @@
+{
+  "method": "POST",
+  "path": "/api/teams/{id}/members/{userId}",
+  "operationId": "post_team_member",
+  "summary": "Add team member",
+  "description": null,
+  "tags": [
+    "Team"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team which will receive the new member",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team member to add (User ID)",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Adds a new user to a team."
+    }
+  }
+}

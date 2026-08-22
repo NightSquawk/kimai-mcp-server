@@ -1,0 +1,84 @@
+{
+  "method": "PATCH",
+  "path": "/api/activities/{id}",
+  "operationId": "patch_activity",
+  "summary": "Update activity",
+  "description": "Update an existing activity, you can pass all or just a subset of all attributes",
+  "tags": [
+    "Activity"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Activity ID to update",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "billable": {
+        "type": "boolean"
+      },
+      "budget": {
+        "description": "The money budget"
+      },
+      "budgetType": {
+        "type": "string",
+        "enum": [
+          "month"
+        ],
+        "description": "The type of budget. Only submit if you want to use a monthly budget."
+      },
+      "color": {
+        "type": "string",
+        "description": "The hexadecimal color code (default: auto-calculated by name)"
+      },
+      "comment": {
+        "type": "string"
+      },
+      "invoiceText": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "number": {
+        "type": "string"
+      },
+      "project": {
+        "type": "integer",
+        "description": "Project ID"
+      },
+      "teams": {
+        "type": "array",
+        "description": "Array of Team IDs",
+        "items": {
+          "type": "integer",
+          "description": "Team IDs"
+        }
+      },
+      "timeBudget": {
+        "type": "string",
+        "description": "Duration - supports various formats: https://www.kimai.org/documentation/duration-format.html"
+      },
+      "visible": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "name"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the updated activity"
+    }
+  }
+}

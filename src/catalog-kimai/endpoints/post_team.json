@@ -1,0 +1,55 @@
+{
+  "operationId": "post_team",
+  "resource": "teams",
+  "category": "Team",
+  "name": "Create team",
+  "method": "POST",
+  "path": "/api/teams",
+  "description": "Creates a new team and returns it afterwards",
+  "writeOperation": true,
+  "destructive": false,
+  "paramLocation": "body",
+  "pathParams": [],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "string",
+        "description": "The hexadecimal color code (default: auto-calculated by name)"
+      },
+      "members": {
+        "type": "array",
+        "description": "All team members",
+        "items": {
+          "type": "object",
+          "properties": {
+            "teamlead": {
+              "type": "boolean",
+              "description": "Whether the user is a teamlead"
+            },
+            "user": {
+              "type": "integer",
+              "description": "User ID"
+            }
+          }
+        }
+      },
+      "name": {
+        "type": "string",
+        "description": "Name of the team"
+      }
+    },
+    "required": [
+      "name",
+      "members"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the new created team"
+    }
+  },
+  "requestSample": "curl -X POST '$KIMAI_BASE_URL/api/teams' -H 'Authorization: Bearer $KIMAI_API_TOKEN' -H 'Content-Type: application/json' -d '{...}'"
+}

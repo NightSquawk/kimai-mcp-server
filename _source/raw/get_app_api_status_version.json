@@ -1,0 +1,20 @@
+{
+  "method": "GET",
+  "path": "/api/version",
+  "operationId": "get_app_api_status_version",
+  "summary": "Fetch Kimai release",
+  "description": null,
+  "tags": [
+    "Default"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns version information about the current release"
+    }
+  }
+}

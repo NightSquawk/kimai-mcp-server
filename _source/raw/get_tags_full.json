@@ -1,0 +1,29 @@
+{
+  "method": "GET",
+  "path": "/api/tags/find",
+  "operationId": "get_tags_full",
+  "summary": "Fetch tags",
+  "description": null,
+  "tags": [
+    "Tag"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [
+    {
+      "name": "name",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Search term to filter tag list",
+      "default": null
+    }
+  ],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Find the collection of all matching tags"
+    }
+  }
+}

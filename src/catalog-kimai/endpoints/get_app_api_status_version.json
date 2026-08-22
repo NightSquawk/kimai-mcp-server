@@ -1,0 +1,22 @@
+{
+  "operationId": "get_app_api_status_version",
+  "resource": "version",
+  "category": "Default",
+  "name": "Fetch Kimai release",
+  "method": "GET",
+  "path": "/api/version",
+  "description": "Fetch Kimai release",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns version information about the current release"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/version' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

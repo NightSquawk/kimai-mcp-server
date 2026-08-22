@@ -1,0 +1,29 @@
+{
+  "method": "DELETE",
+  "path": "/api/activities/{id}",
+  "operationId": "delete_activity",
+  "summary": "Delete activity",
+  "description": "[DANGER] This will also delete ALL linked timesheets.\nDo you want to use `PATCH` instead and mark it as inactive with `{visible: false}`?",
+  "tags": [
+    "Activity"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Activity ID to delete",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Delete one activity"
+    }
+  }
+}

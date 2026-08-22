@@ -1,0 +1,29 @@
+{
+  "method": "PATCH",
+  "path": "/api/timesheets/{id}/export",
+  "operationId": "patch_export_timesheet",
+  "summary": "Toggle timesheet export state",
+  "description": null,
+  "tags": [
+    "Timesheet"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Timesheet ID to switch export state",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Switches the exported state on the record and therefor locks / unlocks it for further updates. Needs edit_export_*_timesheet permission."
+    }
+  }
+}

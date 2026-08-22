@@ -1,0 +1,31 @@
+{
+  "operationId": "get_activity_rates",
+  "resource": "activities",
+  "category": "Activity",
+  "name": "Fetch rates for activity",
+  "method": "GET",
+  "path": "/api/activities/{id}/rates",
+  "description": "Fetch rates for activity",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The activity whose rates will be returned",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of activity rate entities"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/activities/{id}/rates' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

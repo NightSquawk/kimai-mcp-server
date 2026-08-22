@@ -1,0 +1,29 @@
+{
+  "method": "POST",
+  "path": "/api/customers/{id}/team",
+  "operationId": "post_customer_team",
+  "summary": "Create team for customer",
+  "description": "REMOVED: this endpoint was removed, use `POST /api/teams/` instead.",
+  "tags": [
+    "Customer"
+  ],
+  "deprecated": true,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The customer to create a default team for",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "410": {
+      "description": "This endpoint was removed"
+    }
+  }
+}

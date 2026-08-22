@@ -1,0 +1,29 @@
+{
+  "method": "GET",
+  "path": "/api/timesheets/{id}",
+  "operationId": "get_timesheet",
+  "summary": "Fetch timesheet",
+  "description": null,
+  "tags": [
+    "Timesheet"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Timesheet ID to fetch",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns one timesheet. Be aware that the datetime fields are given in the users local time including the timezone offset via ISO 8601."
+    }
+  }
+}

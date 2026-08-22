@@ -1,0 +1,29 @@
+{
+  "method": "PATCH",
+  "path": "/api/timesheets/{id}/duplicate",
+  "operationId": "patch_duplicate_timesheet",
+  "summary": "Duplicate timesheet",
+  "description": null,
+  "tags": [
+    "Timesheet"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Timesheet ID to duplicate",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Duplicates a timesheet, resetting the export state only."
+    }
+  }
+}

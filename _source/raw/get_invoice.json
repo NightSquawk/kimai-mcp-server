@@ -1,0 +1,28 @@
+{
+  "method": "GET",
+  "path": "/api/invoices/{id}",
+  "operationId": "get_invoice",
+  "summary": "Fetch invoice",
+  "description": null,
+  "tags": [
+    "Invoice"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns one invoice"
+    }
+  }
+}

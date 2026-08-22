@@ -1,0 +1,41 @@
+{
+  "method": "GET",
+  "path": "/api/expenses",
+  "operationId": "get_expenses",
+  "summary": "List expenses",
+  "description": "Returns a collection of expenses. Requires the Kimai Expenses plugin. HAND-AUTHORED: this endpoint is absent from the open-source /api/doc the catalog was generated from, so its parameters were reconstructed from Kimai's shared collection-filter conventions and from live calls made by kimai_list_expenses in v0.2.0. Treat the parameter list as observed rather than specified, and expect a 404 on any instance without the plugin.",
+  "tags": [
+    "Expense"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [
+    {
+      "name": "page",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Page number, 1-based.",
+      "default": "1"
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Entries per page.",
+      "default": "50"
+    }
+  ],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of expense entities"
+    },
+    "404": {
+      "description": "Expenses plugin is not installed on this instance"
+    }
+  },
+  "pluginOnly": true
+}

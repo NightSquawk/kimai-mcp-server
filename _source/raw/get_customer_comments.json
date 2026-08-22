@@ -1,0 +1,29 @@
+{
+  "method": "GET",
+  "path": "/api/customers/{id}/comments",
+  "operationId": "get_customer_comments",
+  "summary": "Fetch comments for customer",
+  "description": null,
+  "tags": [
+    "Customer"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The customer whose comments will be returned",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of customer comments"
+    }
+  }
+}

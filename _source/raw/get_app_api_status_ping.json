@@ -1,0 +1,20 @@
+{
+  "method": "GET",
+  "path": "/api/ping",
+  "operationId": "get_app_api_status_ping",
+  "summary": "Testing route for the API",
+  "description": null,
+  "tags": [
+    "Default"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "A simple route that returns a 'pong', which you can use for testing the API"
+    }
+  }
+}

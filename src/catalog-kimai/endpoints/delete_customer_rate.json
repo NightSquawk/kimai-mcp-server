@@ -1,0 +1,39 @@
+{
+  "operationId": "delete_customer_rate",
+  "resource": "customers",
+  "category": "Customer",
+  "name": "Delete rate for customer",
+  "method": "DELETE",
+  "path": "/api/customers/{id}/rates/{rateId}",
+  "description": "Delete rate for customer",
+  "writeOperation": true,
+  "destructive": true,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The customer whose rate will be removed",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "rateId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The rate to remove",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Returns no content: 204 on successful delete"
+    }
+  },
+  "requestSample": "curl -X DELETE '$KIMAI_BASE_URL/api/customers/{id}/rates/{rateId}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

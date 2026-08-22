@@ -1,0 +1,29 @@
+{
+  "method": "POST",
+  "path": "/api/activities/{id}/team",
+  "operationId": "post_activity_team",
+  "summary": "Create team for activity",
+  "description": "REMOVED: this endpoint was removed, use `POST /api/teams/` instead.",
+  "tags": [
+    "Activity"
+  ],
+  "deprecated": true,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The activity to create a default team for",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "410": {
+      "description": "This endpoint was removed"
+    }
+  }
+}

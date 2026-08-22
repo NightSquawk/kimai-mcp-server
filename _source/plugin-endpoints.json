@@ -1,0 +1,121 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/expenses",
+    "operationId": "get_expenses",
+    "summary": "List expenses",
+    "description": "Returns a collection of expenses. Requires the Kimai Expenses plugin. HAND-AUTHORED: this endpoint is absent from the open-source /api/doc the catalog was generated from, so its parameters were reconstructed from Kimai's shared collection-filter conventions and from live calls made by kimai_list_expenses in v0.2.0. Treat the parameter list as observed rather than specified, and expect a 404 on any instance without the plugin.",
+    "tags": ["Expense"],
+    "deprecated": false,
+    "pathParams": [],
+    "params": [
+      { "name": "page", "type": "string", "required": false, "in": "query", "description": "Page number, 1-based.", "default": "1" },
+      { "name": "size", "type": "string", "required": false, "in": "query", "description": "Entries per page.", "default": "50" }
+    ],
+    "bodySchema": null,
+    "bodyContentType": null,
+    "responses": {
+      "200": { "description": "Returns a collection of expense entities" },
+      "404": { "description": "Expenses plugin is not installed on this instance" }
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/expenses/{id}",
+    "operationId": "get_expense",
+    "summary": "Fetch one expense",
+    "description": "Returns one expense record. Requires the Kimai Expenses plugin. HAND-AUTHORED: see get_expenses for what that means about parameter fidelity.",
+    "tags": ["Expense"],
+    "deprecated": false,
+    "pathParams": [
+      { "name": "id", "type": "integer", "required": true, "in": "path", "description": "Expense ID to fetch" }
+    ],
+    "params": [],
+    "bodySchema": null,
+    "bodyContentType": null,
+    "responses": {
+      "200": { "description": "Returns one expense entity" },
+      "404": { "description": "Expense not found, or the Expenses plugin is not installed" }
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/tasks",
+    "operationId": "get_tasks",
+    "summary": "List tasks",
+    "description": "Returns a collection of tasks. Requires the Kimai Task Management plugin. HAND-AUTHORED: see get_expenses for what that means about parameter fidelity.",
+    "tags": ["Task"],
+    "deprecated": false,
+    "pathParams": [],
+    "params": [
+      { "name": "page", "type": "string", "required": false, "in": "query", "description": "Page number, 1-based.", "default": "1" },
+      { "name": "size", "type": "string", "required": false, "in": "query", "description": "Entries per page.", "default": "50" }
+    ],
+    "bodySchema": null,
+    "bodyContentType": null,
+    "responses": {
+      "200": { "description": "Returns a collection of task entities" },
+      "404": { "description": "Task Management plugin is not installed on this instance" }
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/tasks/{id}",
+    "operationId": "get_task",
+    "summary": "Fetch one task",
+    "description": "Returns one task record. Requires the Kimai Task Management plugin. HAND-AUTHORED: see get_expenses for what that means about parameter fidelity.",
+    "tags": ["Task"],
+    "deprecated": false,
+    "pathParams": [
+      { "name": "id", "type": "integer", "required": true, "in": "path", "description": "Task ID to fetch" }
+    ],
+    "params": [],
+    "bodySchema": null,
+    "bodyContentType": null,
+    "responses": {
+      "200": { "description": "Returns one task entity" },
+      "404": { "description": "Task not found, or the Task Management plugin is not installed" }
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/absences",
+    "operationId": "get_absences",
+    "summary": "List absences",
+    "description": "Returns absences (holiday, sickness, time off) for a user over a date range. Requires the Kimai Work Contract plugin. Useful for explaining gaps in a timesheet report before assuming time went unlogged. This endpoint is NOT paginated: it returns the full range in one response, so a wide begin/end can return a large payload. HAND-AUTHORED: see get_expenses for what that means about parameter fidelity.",
+    "tags": ["Absence"],
+    "deprecated": false,
+    "pathParams": [],
+    "params": [
+      { "name": "user", "type": "string", "required": false, "in": "query", "description": "User ID to fetch absences for. Defaults to the API token owner." },
+      { "name": "begin", "type": "string", "required": false, "in": "query", "description": "Range start as an HTML5 local date-time, e.g. 2026-08-01T00:00:00.", "format": "date-time" },
+      { "name": "end", "type": "string", "required": false, "in": "query", "description": "Range end as an HTML5 local date-time.", "format": "date-time" }
+    ],
+    "bodySchema": null,
+    "bodyContentType": null,
+    "responses": {
+      "200": { "description": "Returns a collection of absence entities" },
+      "404": { "description": "Work Contract plugin is not installed on this instance" }
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/public-holidays",
+    "operationId": "get_public_holidays",
+    "summary": "List public holidays",
+    "description": "Returns the configured public holidays for a date range. Requires the Kimai Work Contract plugin. Not paginated. HAND-AUTHORED: see get_expenses for what that means about parameter fidelity.",
+    "tags": ["Absence"],
+    "deprecated": false,
+    "pathParams": [],
+    "params": [
+      { "name": "begin", "type": "string", "required": false, "in": "query", "description": "Range start as an HTML5 local date-time.", "format": "date-time" },
+      { "name": "end", "type": "string", "required": false, "in": "query", "description": "Range end as an HTML5 local date-time.", "format": "date-time" }
+    ],
+    "bodySchema": null,
+    "bodyContentType": null,
+    "responses": {
+      "200": { "description": "Returns a collection of public holiday entities" },
+      "404": { "description": "Work Contract plugin is not installed on this instance" }
+    }
+  }
+]

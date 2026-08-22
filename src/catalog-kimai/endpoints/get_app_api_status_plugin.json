@@ -1,0 +1,22 @@
+{
+  "operationId": "get_app_api_status_plugin",
+  "resource": "plugins",
+  "category": "Default",
+  "name": "Fetch installed Plugins",
+  "method": "GET",
+  "path": "/api/plugins",
+  "description": "Fetch installed Plugins",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a list of plugin names and versions"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/plugins' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

@@ -1,0 +1,44 @@
+{
+  "method": "POST",
+  "path": "/api/projects/{id}/comments",
+  "operationId": "post_project_comment",
+  "summary": "Add comment for project",
+  "description": null,
+  "tags": [
+    "Project"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The project to add the comment for",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "message": {
+        "type": "string",
+        "description": "The actual comment (markdown is supported)"
+      },
+      "pinned": {
+        "type": "boolean",
+        "description": "Pinned comments always appear first"
+      }
+    },
+    "required": [
+      "message"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the newly created project comment"
+    }
+  }
+}

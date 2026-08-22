@@ -1,0 +1,20 @@
+{
+  "method": "GET",
+  "path": "/api/teams",
+  "operationId": "get_teams",
+  "summary": "Fetch teams",
+  "description": null,
+  "tags": [
+    "Team"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of teams"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "operationId": "post_team_member",
+  "resource": "teams",
+  "category": "Team",
+  "name": "Add team member",
+  "method": "POST",
+  "path": "/api/teams/{id}/members/{userId}",
+  "description": "Add team member",
+  "writeOperation": true,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team which will receive the new member",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team member to add (User ID)",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Adds a new user to a team."
+    }
+  },
+  "requestSample": "curl -X POST '$KIMAI_BASE_URL/api/teams/{id}/members/{userId}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

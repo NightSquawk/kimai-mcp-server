@@ -1,0 +1,29 @@
+{
+  "method": "PATCH",
+  "path": "/api/timesheets/{id}/stop",
+  "operationId": "patch_stop_timesheet",
+  "summary": "Stop active timesheet",
+  "description": null,
+  "tags": [
+    "Timesheet"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Timesheet ID to stop",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Stops an active timesheet and returns it afterwards."
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "method": "GET",
+  "path": "/api/projects/{id}/comments",
+  "operationId": "get_project_comments",
+  "summary": "Fetch comments for project",
+  "description": null,
+  "tags": [
+    "Project"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The project whose comments will be returned",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of project comments"
+    }
+  }
+}

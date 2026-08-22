@@ -1,0 +1,39 @@
+{
+  "operationId": "delete_project_comment",
+  "resource": "projects",
+  "category": "Project",
+  "name": "Delete project comment",
+  "method": "DELETE",
+  "path": "/api/projects/{id}/comments/{comment}",
+  "description": "Delete project comment",
+  "writeOperation": true,
+  "destructive": true,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The project whose comment will be removed",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "comment",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The comment to remove",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Returns no content: 204 on successful delete"
+    }
+  },
+  "requestSample": "curl -X DELETE '$KIMAI_BASE_URL/api/projects/{id}/comments/{comment}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

@@ -1,0 +1,44 @@
+{
+  "method": "POST",
+  "path": "/api/customers/{id}/comments",
+  "operationId": "post_customer_comment",
+  "summary": "Add comment for customer",
+  "description": null,
+  "tags": [
+    "Customer"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The customer to add the comment for",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "message": {
+        "type": "string",
+        "description": "The actual comment (markdown is supported)"
+      },
+      "pinned": {
+        "type": "boolean",
+        "description": "Pinned comments always appear first"
+      }
+    },
+    "required": [
+      "message"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the newly created customer comment"
+    }
+  }
+}

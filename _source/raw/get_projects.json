@@ -1,0 +1,108 @@
+{
+  "method": "GET",
+  "path": "/api/projects",
+  "operationId": "get_projects",
+  "summary": "Fetch projects",
+  "description": null,
+  "tags": [
+    "Project"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [
+    {
+      "name": "customer",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Customer ID to filter projects",
+      "pattern": "\\d+",
+      "default": null
+    },
+    {
+      "name": "customers[]",
+      "type": "array",
+      "required": false,
+      "in": "query",
+      "description": "List of customer IDs to filter, e.g.: customers[]=1&customers[]=2",
+      "pattern": "\\d+",
+      "items": [],
+      "default": []
+    },
+    {
+      "name": "visible",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Visibility status to filter projects: 1=visible, 2=hidden, 3=both",
+      "pattern": "1|2|3",
+      "default": 1
+    },
+    {
+      "name": "start",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Only projects that started before this date will be included. Allowed format: HTML5 (default: now, if end is also empty)",
+      "default": null
+    },
+    {
+      "name": "end",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Only projects that ended after this date will be included. Allowed format: HTML5 (default: now, if start is also empty)",
+      "default": null
+    },
+    {
+      "name": "ignoreDates",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "If set, start and end are completely ignored. Allowed values: 1 (default: off)",
+      "default": null
+    },
+    {
+      "name": "globalActivities",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "If given, filters projects by their 'global activity' support. Allowed values: 1 (supports global activities) and 0 (without global activities) (default: all)",
+      "pattern": "0|1",
+      "default": null
+    },
+    {
+      "name": "order",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "The result order. Allowed values: ASC, DESC (default: ASC)",
+      "pattern": "ASC|DESC",
+      "default": null
+    },
+    {
+      "name": "orderBy",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "The field by which results will be ordered. Allowed values: id, name, customer (default: name)",
+      "pattern": "id|name|customer",
+      "default": null
+    },
+    {
+      "name": "term",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Free search term",
+      "default": null
+    }
+  ],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of projects"
+    }
+  }
+}

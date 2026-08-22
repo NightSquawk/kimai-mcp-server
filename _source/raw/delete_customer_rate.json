@@ -1,0 +1,37 @@
+{
+  "method": "DELETE",
+  "path": "/api/customers/{id}/rates/{rateId}",
+  "operationId": "delete_customer_rate",
+  "summary": "Delete rate for customer",
+  "description": null,
+  "tags": [
+    "Customer"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The customer whose rate will be removed",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "rateId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The rate to remove",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Returns no content: 204 on successful delete"
+    }
+  }
+}

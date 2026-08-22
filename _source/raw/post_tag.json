@@ -1,0 +1,38 @@
+{
+  "method": "POST",
+  "path": "/api/tags",
+  "operationId": "post_tag",
+  "summary": "Create tag",
+  "description": "Creates a new tag and returns it afterwards",
+  "tags": [
+    "Tag"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "string",
+        "description": "The hexadecimal color code (default: auto-calculated by name)"
+      },
+      "name": {
+        "type": "string",
+        "description": "The tag name (forbidden character: comma)"
+      },
+      "visible": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "name"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the new created tag"
+    }
+  }
+}

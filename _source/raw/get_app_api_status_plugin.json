@@ -1,0 +1,20 @@
+{
+  "method": "GET",
+  "path": "/api/plugins",
+  "operationId": "get_app_api_status_plugin",
+  "summary": "Fetch installed Plugins",
+  "description": null,
+  "tags": [
+    "Default"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a list of plugin names and versions"
+    }
+  }
+}

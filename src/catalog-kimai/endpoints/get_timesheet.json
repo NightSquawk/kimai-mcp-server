@@ -1,0 +1,31 @@
+{
+  "operationId": "get_timesheet",
+  "resource": "timesheets",
+  "category": "Timesheet",
+  "name": "Fetch timesheet",
+  "method": "GET",
+  "path": "/api/timesheets/{id}",
+  "description": "Fetch timesheet",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Timesheet ID to fetch",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns one timesheet. Be aware that the datetime fields are given in the users local time including the timezone offset via ISO 8601."
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/timesheets/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

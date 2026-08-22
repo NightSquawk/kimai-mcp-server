@@ -1,0 +1,29 @@
+{
+  "method": "GET",
+  "path": "/api/activities/{id}/rates",
+  "operationId": "get_activity_rates",
+  "summary": "Fetch rates for activity",
+  "description": null,
+  "tags": [
+    "Activity"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The activity whose rates will be returned",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of activity rate entities"
+    }
+  }
+}

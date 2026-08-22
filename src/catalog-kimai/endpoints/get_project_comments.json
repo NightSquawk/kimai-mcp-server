@@ -1,0 +1,31 @@
+{
+  "operationId": "get_project_comments",
+  "resource": "projects",
+  "category": "Project",
+  "name": "Fetch comments for project",
+  "method": "GET",
+  "path": "/api/projects/{id}/comments",
+  "description": "Fetch comments for project",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The project whose comments will be returned",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of project comments"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/projects/{id}/comments' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

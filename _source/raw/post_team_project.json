@@ -1,0 +1,37 @@
+{
+  "method": "POST",
+  "path": "/api/teams/{id}/projects/{projectId}",
+  "operationId": "post_team_project",
+  "summary": "Grant project access",
+  "description": "The team is granted access to the project.",
+  "tags": [
+    "Team"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team that is granted access",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "projectId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The project to grant acecess to (Project ID)",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the team including the project"
+    }
+  }
+}

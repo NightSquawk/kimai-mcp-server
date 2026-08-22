@@ -1,0 +1,189 @@
+{
+  "method": "PATCH",
+  "path": "/api/customers/{id}",
+  "operationId": "patch_customer",
+  "summary": "Update customer",
+  "description": "Update an existing customer, you can pass all or just a subset of all attributes",
+  "tags": [
+    "Customer"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Customer ID to update",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "addressLine1": {
+        "type": "string"
+      },
+      "addressLine2": {
+        "type": "string"
+      },
+      "addressLine3": {
+        "type": "string"
+      },
+      "billable": {
+        "type": "boolean"
+      },
+      "budget": {
+        "description": "The money budget"
+      },
+      "budgetType": {
+        "type": "string",
+        "enum": [
+          "month"
+        ],
+        "description": "The type of budget. Only submit if you want to use a monthly budget."
+      },
+      "buyerReference": {
+        "type": "string"
+      },
+      "city": {
+        "type": "string"
+      },
+      "color": {
+        "type": "string",
+        "description": "The hexadecimal color code (default: auto-calculated by name)"
+      },
+      "comment": {
+        "type": "string"
+      },
+      "company": {
+        "type": "string"
+      },
+      "contact": {
+        "type": "string"
+      },
+      "country": {
+        "type": "string"
+      },
+      "currency": {
+        "type": "string"
+      },
+      "email": {
+        "type": "string"
+      },
+      "fax": {
+        "type": "string"
+      },
+      "homepage": {
+        "type": "string"
+      },
+      "invoiceEmail": {
+        "type": "string"
+      },
+      "invoiceTemplate": {
+        "type": "string",
+        "format": "App\\Entity\\InvoiceTemplate id"
+      },
+      "invoiceText": {
+        "type": "string"
+      },
+      "language": {
+        "type": "string",
+        "enum": [
+          "ar",
+          "bg",
+          "ca",
+          "cs",
+          "da",
+          "de",
+          "de_CH",
+          "el",
+          "en",
+          "eo",
+          "es",
+          "eu",
+          "fa",
+          "fi",
+          "fo",
+          "fr",
+          "he",
+          "hr",
+          "hu",
+          "id",
+          "it",
+          "ja",
+          "ko",
+          "nb_NO",
+          "nl",
+          "pa",
+          "pl",
+          "pt",
+          "pt_BR",
+          "ro",
+          "ru",
+          "sk",
+          "sl",
+          "sr",
+          "sv",
+          "ta",
+          "tr",
+          "uk",
+          "vi",
+          "zh_CN",
+          "zh_Hant",
+          "zh_Hant_TW"
+        ]
+      },
+      "mobile": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "number": {
+        "type": "string"
+      },
+      "phone": {
+        "type": "string"
+      },
+      "postCode": {
+        "type": "string"
+      },
+      "teams": {
+        "type": "array",
+        "description": "Array of Team IDs",
+        "items": {
+          "type": "integer",
+          "description": "Team IDs"
+        }
+      },
+      "timeBudget": {
+        "type": "string",
+        "description": "Duration - supports various formats: https://www.kimai.org/documentation/duration-format.html"
+      },
+      "timezone": {
+        "type": "string"
+      },
+      "vatId": {
+        "type": "string"
+      },
+      "visible": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "name",
+      "country",
+      "language",
+      "currency",
+      "timezone"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the updated customer"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "method": "GET",
+  "path": "/api/timesheets/active",
+  "operationId": "get_active_timesheet",
+  "summary": "Fetch active timesheets",
+  "description": null,
+  "tags": [
+    "Timesheet"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of active timesheets for the current user"
+    }
+  }
+}

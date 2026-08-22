@@ -1,0 +1,39 @@
+{
+  "operationId": "patch_toggle_project_comment_pin",
+  "resource": "projects",
+  "category": "Project",
+  "name": "Pin project comment",
+  "method": "PATCH",
+  "path": "/api/projects/{id}/comments/{comment}/pin",
+  "description": "This toggles the `pinned` status of the given comment.",
+  "writeOperation": true,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The project whose comment will be pinned or unpinned",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "comment",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The comment whose pinned status will be toggled",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the updated project comment"
+    }
+  },
+  "requestSample": "curl -X PATCH '$KIMAI_BASE_URL/api/projects/{id}/comments/{comment}/pin' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

@@ -1,0 +1,31 @@
+{
+  "operationId": "get_customer_rates",
+  "resource": "customers",
+  "category": "Customer",
+  "name": "Fetch rates for customer",
+  "method": "GET",
+  "path": "/api/customers/{id}/rates",
+  "description": "Fetch rates for customer",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The customer whose rates will be returned",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of customer rate entities"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/customers/{id}/rates' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

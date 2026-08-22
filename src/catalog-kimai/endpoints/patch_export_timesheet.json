@@ -1,0 +1,31 @@
+{
+  "operationId": "patch_export_timesheet",
+  "resource": "timesheets",
+  "category": "Timesheet",
+  "name": "Toggle timesheet export state",
+  "method": "PATCH",
+  "path": "/api/timesheets/{id}/export",
+  "description": "Toggle timesheet export state",
+  "writeOperation": true,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Timesheet ID to switch export state",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Switches the exported state on the record and therefor locks / unlocks it for further updates. Needs edit_export_*_timesheet permission."
+    }
+  },
+  "requestSample": "curl -X PATCH '$KIMAI_BASE_URL/api/timesheets/{id}/export' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

@@ -1,0 +1,22 @@
+{
+  "operationId": "get_app_api_configuration_timesheetconfig",
+  "resource": "config",
+  "category": "Default",
+  "name": "Fetch timesheet configuration",
+  "method": "GET",
+  "path": "/api/config/timesheet",
+  "description": "Fetch timesheet configuration",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the instance specific timesheet configuration"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/config/timesheet' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

@@ -1,0 +1,65 @@
+{
+  "method": "GET",
+  "path": "/api/customers",
+  "operationId": "get_customers",
+  "summary": "Fetch customers",
+  "description": null,
+  "tags": [
+    "Customer"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [
+    {
+      "name": "visible",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Visibility status to filter customers: 1=visible, 2=hidden, 3=both",
+      "pattern": "1|2|3",
+      "default": 1
+    },
+    {
+      "name": "order",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "The result order. Allowed values: ASC, DESC (default: ASC)",
+      "pattern": "ASC|DESC",
+      "default": null
+    },
+    {
+      "name": "orderBy",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "The field by which results will be ordered. Allowed values: id, name (default: name)",
+      "pattern": "id|name",
+      "default": null
+    },
+    {
+      "name": "term",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Free search term",
+      "default": null
+    },
+    {
+      "name": "full",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Allows to fetch objects with full details (needs `details_customer` permission). Allowed values: 0|1 (default: 0)",
+      "pattern": "0|1",
+      "default": null
+    }
+  ],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of customers"
+    }
+  }
+}

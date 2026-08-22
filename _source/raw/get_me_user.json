@@ -1,0 +1,20 @@
+{
+  "method": "GET",
+  "path": "/api/users/me",
+  "operationId": "get_me_user",
+  "summary": "Fetch current user",
+  "description": null,
+  "tags": [
+    "User"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Return the current user entity."
+    }
+  }
+}

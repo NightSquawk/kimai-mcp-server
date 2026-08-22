@@ -1,0 +1,80 @@
+{
+  "method": "POST",
+  "path": "/api/timesheets",
+  "operationId": "post_timesheet",
+  "summary": "Create timesheet",
+  "description": "Creates a new timesheet for the current user and returns it afterwards.",
+  "tags": [
+    "Timesheet"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [
+    {
+      "name": "full",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Allows to fetch fully serialized objects including subresources (TimesheetExpanded). Allowed values: true (default: false)",
+      "default": null
+    }
+  ],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "activity": {
+        "type": "integer",
+        "description": "Activity ID"
+      },
+      "begin": {
+        "type": "string",
+        "format": "date-time",
+        "description": "If no begin date-time is set, the users current timestamp will be used"
+      },
+      "billable": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "end": {
+        "type": "string",
+        "format": "date-time",
+        "description": "If no end date-time is set, the timesheet will be running"
+      },
+      "exported": {
+        "type": "boolean"
+      },
+      "fixedRate": {
+        "type": "number",
+        "description": "Fixed rate"
+      },
+      "hourlyRate": {
+        "type": "number",
+        "description": "Hourly rate"
+      },
+      "project": {
+        "type": "integer",
+        "description": "Project ID"
+      },
+      "tags": {
+        "type": "string",
+        "description": "Comma separated list of tags"
+      },
+      "user": {
+        "type": "integer",
+        "description": "User ID"
+      }
+    },
+    "required": [
+      "project",
+      "activity"
+    ]
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Returns the new created timesheet"
+    }
+  }
+}

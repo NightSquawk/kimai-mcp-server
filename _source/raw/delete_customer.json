@@ -1,0 +1,29 @@
+{
+  "method": "DELETE",
+  "path": "/api/customers/{id}",
+  "operationId": "delete_customer",
+  "summary": "Delete customer",
+  "description": "[DANGER] This will also delete ALL linked projects, project activities and timesheets.\nDo you want to use `PATCH` instead and mark it as inactive with `{visible: false}`?",
+  "tags": [
+    "Customer"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Customer ID to delete",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Delete one customer"
+    }
+  }
+}

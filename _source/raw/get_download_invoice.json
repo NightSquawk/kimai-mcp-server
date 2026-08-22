@@ -1,0 +1,28 @@
+{
+  "method": "GET",
+  "path": "/api/invoices/{id}/download",
+  "operationId": "get_download_invoice",
+  "summary": "Download invoice",
+  "description": null,
+  "tags": [
+    "Invoice"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Downloads the invoice document as an attachment. The content type depends on the configured invoice renderer."
+    }
+  }
+}

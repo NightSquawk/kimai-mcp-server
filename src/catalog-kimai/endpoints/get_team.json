@@ -1,0 +1,30 @@
+{
+  "operationId": "get_team",
+  "resource": "teams",
+  "category": "Team",
+  "name": "Fetch team",
+  "method": "GET",
+  "path": "/api/teams/{id}",
+  "description": "Fetch team",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the team"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/teams/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

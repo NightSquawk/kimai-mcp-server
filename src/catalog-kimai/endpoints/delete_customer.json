@@ -1,0 +1,31 @@
+{
+  "operationId": "delete_customer",
+  "resource": "customers",
+  "category": "Customer",
+  "name": "Delete customer",
+  "method": "DELETE",
+  "path": "/api/customers/{id}",
+  "description": "[DANGER] This will also delete ALL linked projects, project activities and timesheets.\nDo you want to use `PATCH` instead and mark it as inactive with `{visible: false}`?",
+  "writeOperation": true,
+  "destructive": true,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Customer ID to delete",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Delete one customer"
+    }
+  },
+  "requestSample": "curl -X DELETE '$KIMAI_BASE_URL/api/customers/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

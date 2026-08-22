@@ -1,0 +1,22 @@
+{
+  "operationId": "get_teams",
+  "resource": "teams",
+  "category": "Team",
+  "name": "Fetch teams",
+  "method": "GET",
+  "path": "/api/teams",
+  "description": "Fetch teams",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of teams"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/teams' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

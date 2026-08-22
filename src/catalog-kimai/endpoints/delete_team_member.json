@@ -1,0 +1,39 @@
+{
+  "operationId": "delete_team_member",
+  "resource": "teams",
+  "category": "Team",
+  "name": "Remove team member",
+  "method": "DELETE",
+  "path": "/api/teams/{id}/members/{userId}",
+  "description": "Remove team member",
+  "writeOperation": true,
+  "destructive": true,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team from which the member will be removed",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team member to remove (User ID)",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Removes a user from the team. The teamlead cannot be removed."
+    }
+  },
+  "requestSample": "curl -X DELETE '$KIMAI_BASE_URL/api/teams/{id}/members/{userId}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

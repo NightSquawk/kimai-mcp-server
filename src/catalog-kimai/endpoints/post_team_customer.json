@@ -1,0 +1,39 @@
+{
+  "operationId": "post_team_customer",
+  "resource": "teams",
+  "category": "Team",
+  "name": "Grant customer access",
+  "method": "POST",
+  "path": "/api/teams/{id}/customers/{customerId}",
+  "description": "The team is granted access to the customer.",
+  "writeOperation": true,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team that is granted access",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "customerId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The customer to grant acecess to (Customer ID)",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the team including the customer"
+    }
+  },
+  "requestSample": "curl -X POST '$KIMAI_BASE_URL/api/teams/{id}/customers/{customerId}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

@@ -1,0 +1,37 @@
+{
+  "method": "DELETE",
+  "path": "/api/teams/{id}/activities/{activityId}",
+  "operationId": "delete_team_activity",
+  "summary": "Revoke activity access",
+  "description": "This removes access to the activity from the team.",
+  "tags": [
+    "Team"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team whose permission will be revoked",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "activityId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The activity to remove (Activity ID)",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the team without the activity"
+    }
+  }
+}

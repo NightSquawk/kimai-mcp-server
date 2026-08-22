@@ -1,0 +1,43 @@
+{
+  "method": "GET",
+  "path": "/api/actions/timesheet/{id}/{view}/{locale}",
+  "operationId": "get_timesheet_actions",
+  "summary": "Fetch item actions for Timesheet",
+  "description": null,
+  "tags": [
+    "Actions"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Timesheet ID to fetch",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "view",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "View to display the actions at (e.g. index, custom)"
+    },
+    {
+      "name": "locale",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Language to translate the action title to (e.g. de, en)"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns item actions for the timesheet"
+    }
+  }
+}

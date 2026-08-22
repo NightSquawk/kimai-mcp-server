@@ -1,0 +1,20 @@
+{
+  "method": "GET",
+  "path": "/api/config/colors",
+  "operationId": "get_app_api_configuration_colorconfig",
+  "summary": "Fetch configured color codes",
+  "description": null,
+  "tags": [
+    "Default"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the configured color codes and names"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "operationId": "get_app_api_configuration_colorconfig",
+  "resource": "config",
+  "category": "Default",
+  "name": "Fetch configured color codes",
+  "method": "GET",
+  "path": "/api/config/colors",
+  "description": "Fetch configured color codes",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the configured color codes and names"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/config/colors' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

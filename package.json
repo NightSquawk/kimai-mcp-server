@@ -26,10 +26,13 @@
     "COMMERCIAL.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && shx rm -rf dist/catalog-kimai && shx cp -r src/catalog-kimai dist/catalog-kimai && shx chmod +x dist/index.js",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "extract": "node scripts/extract-openapi.mjs",
+    "assemble": "node scripts/assemble-catalog.mjs",
+    "regen": "npm run extract && npm run assemble"
   },
   "engines": {
     "node": ">=20"
@@ -44,6 +47,7 @@
   "devDependencies": {
     "@types/node": "^24.0.0",
     "rimraf": "^6.0.1",
+    "shx": "^0.4.0",
     "tsx": "^4.20.0",
     "typescript": "^5.9.0"
   },

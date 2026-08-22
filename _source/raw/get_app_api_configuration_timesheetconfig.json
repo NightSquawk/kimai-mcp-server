@@ -1,0 +1,20 @@
+{
+  "method": "GET",
+  "path": "/api/config/timesheet",
+  "operationId": "get_app_api_configuration_timesheetconfig",
+  "summary": "Fetch timesheet configuration",
+  "description": null,
+  "tags": [
+    "Default"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the instance specific timesheet configuration"
+    }
+  }
+}

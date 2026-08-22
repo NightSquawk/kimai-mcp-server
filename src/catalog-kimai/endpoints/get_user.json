@@ -1,0 +1,31 @@
+{
+  "operationId": "get_user",
+  "resource": "users",
+  "category": "User",
+  "name": "Fetch user",
+  "method": "GET",
+  "path": "/api/users/{id}",
+  "description": "Fetch user",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "User ID to fetch",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Return one user entity."
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/users/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

@@ -1,0 +1,31 @@
+{
+  "operationId": "delete_activity",
+  "resource": "activities",
+  "category": "Activity",
+  "name": "Delete activity",
+  "method": "DELETE",
+  "path": "/api/activities/{id}",
+  "description": "[DANGER] This will also delete ALL linked timesheets.\nDo you want to use `PATCH` instead and mark it as inactive with `{visible: false}`?",
+  "writeOperation": true,
+  "destructive": true,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Activity ID to delete",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Delete one activity"
+    }
+  },
+  "requestSample": "curl -X DELETE '$KIMAI_BASE_URL/api/activities/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

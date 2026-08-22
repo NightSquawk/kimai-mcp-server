@@ -1,0 +1,41 @@
+{
+  "method": "GET",
+  "path": "/api/tasks",
+  "operationId": "get_tasks",
+  "summary": "List tasks",
+  "description": "Returns a collection of tasks. Requires the Kimai Task Management plugin. HAND-AUTHORED: see get_expenses for what that means about parameter fidelity.",
+  "tags": [
+    "Task"
+  ],
+  "deprecated": false,
+  "pathParams": [],
+  "params": [
+    {
+      "name": "page",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Page number, 1-based.",
+      "default": "1"
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "required": false,
+      "in": "query",
+      "description": "Entries per page.",
+      "default": "50"
+    }
+  ],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of task entities"
+    },
+    "404": {
+      "description": "Task Management plugin is not installed on this instance"
+    }
+  },
+  "pluginOnly": true
+}

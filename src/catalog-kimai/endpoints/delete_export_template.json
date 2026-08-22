@@ -1,0 +1,31 @@
+{
+  "operationId": "delete_export_template",
+  "resource": "export",
+  "category": "Export",
+  "name": "Delete export template",
+  "method": "DELETE",
+  "path": "/api/export/{id}",
+  "description": "Delete export template",
+  "writeOperation": true,
+  "destructive": true,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Export template ID to delete",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Delete export template"
+    }
+  },
+  "requestSample": "curl -X DELETE '$KIMAI_BASE_URL/api/export/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'"
+}

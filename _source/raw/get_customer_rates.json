@@ -1,0 +1,29 @@
+{
+  "method": "GET",
+  "path": "/api/customers/{id}/rates",
+  "operationId": "get_customer_rates",
+  "summary": "Fetch rates for customer",
+  "description": null,
+  "tags": [
+    "Customer"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The customer whose rates will be returned",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns a collection of customer rate entities"
+    }
+  }
+}

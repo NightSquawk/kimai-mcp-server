@@ -1,0 +1,34 @@
+{
+  "operationId": "get_task",
+  "resource": "tasks",
+  "category": "Task",
+  "name": "Fetch one task",
+  "method": "GET",
+  "path": "/api/tasks/{id}",
+  "description": "Returns one task record. Requires the Kimai Task Management plugin. HAND-AUTHORED: see get_expenses for what that means about parameter fidelity.",
+  "writeOperation": false,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "integer",
+      "required": true,
+      "in": "path",
+      "description": "Task ID to fetch"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns one task entity"
+    },
+    "404": {
+      "description": "Task not found, or the Task Management plugin is not installed"
+    }
+  },
+  "requestSample": "curl -X GET '$KIMAI_BASE_URL/api/tasks/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'",
+  "pluginOnly": true
+}

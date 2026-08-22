@@ -1,0 +1,37 @@
+{
+  "method": "DELETE",
+  "path": "/api/teams/{id}/customers/{customerId}",
+  "operationId": "delete_team_customer",
+  "summary": "Revoke customer access",
+  "description": "This removes access to the customer from the team.",
+  "tags": [
+    "Team"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The team whose permission will be revoked",
+      "pattern": "\\d+"
+    },
+    {
+      "name": "customerId",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "The customer to remove (Customer ID)",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the team without the customer"
+    }
+  }
+}

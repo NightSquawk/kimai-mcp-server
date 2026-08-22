@@ -1,0 +1,40 @@
+{
+  "method": "PATCH",
+  "path": "/api/timesheets/{id}/restart",
+  "operationId": "patch_restart_timesheet",
+  "summary": "Restart timesheet",
+  "description": "The restarted timesheet will be created for the current user",
+  "tags": [
+    "Timesheet"
+  ],
+  "deprecated": false,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Timesheet ID to restart",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": {
+    "type": "object",
+    "properties": {
+      "begin": {
+        "type": "string"
+      },
+      "copy": {
+        "type": "string",
+        "pattern": "all"
+      }
+    }
+  },
+  "bodyContentType": "application/json",
+  "responses": {
+    "200": {
+      "description": "Restart a timesheet for the same customer, project, activity combination. The current user will be the owner of the new record. Kimai tries to stop running records, which is expected to fail depending on the configured rules. Data will be copied from the original record if requested."
+    }
+  }
+}
