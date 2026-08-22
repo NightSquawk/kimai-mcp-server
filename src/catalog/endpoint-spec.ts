@@ -80,6 +80,18 @@ export interface EndpointParam {
   required: boolean;
   description?: string;
   format?: string;
+  /**
+   * The parameter's regex constraint, preserved where arr's catalog drops it.
+   * Kimai states several of its filter rules ONLY here, and they are the rules
+   * a caller gets wrong: `\d+|all` on `user` (omit it and a team report
+   * silently covers one person), `0|1` on `exported` and `billable` (booleans
+   * that are integers on the wire), `1|2|3` on `visible`. kimai_call_endpoint
+   * reads this field to coerce or refuse those shapes, so dropping it would
+   * disable that checking rather than merely lose documentation.
+   */
+  pattern?: string;
+  /** Element schema for array-typed parameters such as `tags[]`. */
+  items?: any;
   enum?: any[];
   default?: any;
   in?: "path" | "query";
@@ -117,6 +129,14 @@ export interface EndpointSpec {
   responses: Record<string, any>;
   /** Human-readable curl-ish example. */
   requestSample: string;
+  /**
+   * Kimai marks the operation deprecated but it still functions. Only the one
+   * such endpoint survives assembly (GET /api/tags); operations whose
+   * description starts "REMOVED:" are tombstones that return 410 and are
+   * excluded from the catalog entirely. Surfaced so describe_endpoint can say
+   * so rather than presenting it as current.
+   */
+  deprecated?: boolean;
   /**
    * True for the six endpoints that exist only when a paid Kimai plugin is
    * installed (expenses, tasks, absences, public holidays). They are absent
