@@ -1,0 +1,69 @@
+kimai  version=2.65.0  operations=88  bytes=213500  source=docker+http-scrape
+
+HOW THIS FILE WAS PRODUCED
+--------------------------
+Kimai ships no machine-readable API spec. config/routes.yaml registers exactly one
+doc route, api.swagger_ui at /api/doc (the Stoplight UI controller). There is no
+JSON route: /api/doc.json, /openapi.json, /swagger.json and five other candidates
+all return 404 on a live instance.
+
+`bin/console nelmio:apidoc:dump --format=json` DOES NOT WORK for Kimai, and this is
+structural, not a configuration problem. src/Form/Type/UserType.php line 90 resolves
+its `choices` option by calling BaseFormTypeQuery::setUser($options['user']), where
+that option defaults to the user on the security token. A CLI command has no security
+token, so the value is null and the command dies with:
+
+  App\Repository\Query\BaseFormTypeQuery::setUser(): Argument #1 ($user)
+  must be of type App\Entity\User, null given
+
+Verified against a fully installed 2.65.0 instance with a ROLE_SUPER_ADMIN user
+present in the database. Having the user in the database does not help; the form
+needs an authenticated request context.
+
+The spec is therefore scraped from an authenticated web session, where Nelmio's
+Stoplight controller inlines it into the page as a JS assignment:
+
+  docs.apiDescriptionDocument = {"spec": { ...OpenAPI 3.0.0... }}
+
+Reproduce with:
+
+  docker network create kimai-spec
+  docker run -d --name kimai-spec-db --network kimai-spec \
+    -e MARIADB_ROOT_PASSWORD=rootpw -e MARIADB_DATABASE=kimai \
+    -e MARIADB_USER=kimai -e MARIADB_PASSWORD=kimai mariadb:11
+  DB="mysql://kimai:kimai@kimai-spec-db:3306/kimai?charset=utf8mb4&serverVersion=11.4.0-MariaDB"
+  # install needs memory_limit=-1; the default 128M is exhausted by the translator
+  docker run --rm --network kimai-spec --entrypoint sh -e APP_ENV=prod \
+    -e APP_SECRET=<32 hex> -e DATABASE_URL="$DB" kimai/kimai2:2.65.0 \
+    -c "cd /opt/kimai && php -d memory_limit=-1 bin/console kimai:install -n"
+  docker run --rm --network kimai-spec --entrypoint sh ... \
+    -c "cd /opt/kimai && php -d memory_limit=-1 bin/console kimai:user:create speccer spec@example.com ROLE_SUPER_ADMIN <pw> -n"
+  docker run -d --name kimai-spec-web --network kimai-spec -p 8677:8001 ... kimai/kimai2:2.65.0
+  # log in at /en/login (Symfony CSRF: scrape _csrf_token first), POST to /en/login_check,
+  # then GET /api/doc and brace-match the object after "docs.apiDescriptionDocument = "
+
+KNOWN GAPS IN THIS ARTIFACT
+---------------------------
+The OSS image carries the core API only. These endpoints exist on the licensed
+production instance (timeclock.nightsquawk.tech, 12 bundles installed) and are
+ABSENT here. They need either a second scrape against that instance or
+hand-authored catalog entries:
+
+  /api/expenses          ExpensesBundle
+  /api/expenses/{id}     ExpensesBundle
+  /api/tasks             TaskManagementBundle
+  /api/tasks/{id}        TaskManagementBundle
+  /api/absences          WorkContractBundle
+  /api/public-holidays   WorkContractBundle
+
+DEPRECATION HANDLING
+--------------------
+4 operations carry deprecated:true, but they are NOT equivalent:
+
+  POST /api/customers|projects|activities/{id}/team
+      Tombstones. Always answer 410 Gone. Exclude from the catalog.
+  GET /api/tags
+      Deprecated but FUNCTIONAL, and kimai-mcp-server 0.2.0 depends on it:
+      /api/tags/find returns [] unless a name is supplied, so listing all tags
+      requires this endpoint. Do NOT blanket-exclude on deprecated:true.
+      Exclude only where the description starts with "REMOVED:".
