@@ -18,7 +18,9 @@
   ],
   "type": "module",
   "main": "dist/index.js",
-  "bin": "./dist/index.js",
+  "bin": {
+    "kimai-mcp-server": "dist/index.js"
+  },
   "files": [
     "dist",
     "README.md",
