@@ -1,0 +1,160 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/favorites/timesheets",
+    "operationId": "get_favorite_timesheets",
+    "summary": "List favorite timesheets",
+    "description": "Returns the current user's favorite timesheets, the saved rows the Kimai UI offers as one-click restart targets. Added in Kimai 2.66.0. Requires the 'start_own_timesheet' permission in addition to API access. HAND-AUTHORED: this endpoint postdates the vendored spec, so its shape was taken from src/API/FavoritesController.php upstream rather than extracted. It takes no parameters and is not paginated.",
+    "tags": ["Favorites"],
+    "deprecated": false,
+    "sinceVersion": 26600,
+    "pathParams": [],
+    "params": [],
+    "bodySchema": null,
+    "bodyContentType": null,
+    "responses": {
+      "200": { "description": "Returns the collection of favorite timesheets for the current user" },
+      "403": { "description": "Missing the start_own_timesheet permission" },
+      "404": { "description": "Kimai older than 2.66.0: the favorites routes do not exist" }
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/favorites/timesheets/{id}",
+    "operationId": "post_favorite_timesheet",
+    "summary": "Add a timesheet to the favorites",
+    "description": "Marks one timesheet as a favorite for the current user. Added in Kimai 2.66.0. The caller must OWN the timesheet ('is_owner'), so this cannot favorite another user's row even with admin rights. Idempotent in effect: favoriting an already-favorited timesheet is not an error. HAND-AUTHORED from src/API/FavoritesController.php; takes no request body, the id in the path is the whole input.",
+    "tags": ["Favorites"],
+    "deprecated": false,
+    "sinceVersion": 26600,
+    "pathParams": [
+      {
+        "name": "id",
+        "type": "integer",
+        "required": true,
+        "in": "path",
+        "description": "Timesheet ID to add to the favorites",
+        "pattern": "\\d+"
+      }
+    ],
+    "params": [],
+    "bodySchema": null,
+    "bodyContentType": null,
+    "responses": {
+      "200": { "description": "Returns the favorited timesheet entity" },
+      "403": { "description": "Not the owner of this timesheet, or missing start_own_timesheet" },
+      "404": { "description": "Timesheet not found, or Kimai older than 2.66.0" }
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/favorites/timesheets/{id}",
+    "operationId": "delete_favorite_timesheet",
+    "summary": "Remove a timesheet from the favorites",
+    "description": "Removes the favorite MARKER from one timesheet. Added in Kimai 2.66.0. THIS DOES NOT DELETE THE TIMESHEET -- the time record is untouched and only the current user's favorite flag is cleared, which is trivially undone by calling post_favorite_timesheet again. It is nonetheless classified destructive and sits behind KIMAI_ALLOW_DELETE, because the catalog classifies every DELETE that way by method; that is a deliberately blunt rule and this endpoint is the one place it currently overreaches. The caller must own the timesheet. HAND-AUTHORED from src/API/FavoritesController.php.",
+    "tags": ["Favorites"],
+    "deprecated": false,
+    "sinceVersion": 26600,
+    "pathParams": [
+      {
+        "name": "id",
+        "type": "integer",
+        "required": true,
+        "in": "path",
+        "description": "Timesheet ID to remove from the favorites",
+        "pattern": "\\d+"
+      }
+    ],
+    "params": [],
+    "bodySchema": null,
+    "bodyContentType": null,
+    "responses": {
+      "200": { "description": "Returns the un-favorited timesheet entity" },
+      "403": { "description": "Not the owner of this timesheet, or missing start_own_timesheet" },
+      "404": { "description": "Timesheet not found, or Kimai older than 2.66.0" }
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/invoices/{id}",
+    "operationId": "delete_invoice",
+    "summary": "Delete invoice",
+    "description": "Deletes an invoice AND its generated document, and releases the timesheets it covered back to un-invoiced. Added in Kimai 2.66.0. This is genuinely irreversible: the rendered document is removed from disk and the invoice number is consumed, so re-invoicing the same period produces a NEW number rather than restoring the old one. Requires the 'delete_invoice' permission. HAND-AUTHORED from src/API/InvoiceController.php.",
+    "tags": ["Invoice"],
+    "deprecated": false,
+    "sinceVersion": 26600,
+    "pathParams": [
+      {
+        "name": "id",
+        "type": "integer",
+        "required": true,
+        "in": "path",
+        "description": "Invoice ID to delete",
+        "pattern": "\\d+"
+      }
+    ],
+    "params": [],
+    "bodySchema": null,
+    "bodyContentType": null,
+    "responses": {
+      "204": { "description": "Invoice and its document were deleted" },
+      "403": { "description": "Missing the delete_invoice permission" },
+      "404": { "description": "Invoice not found, or Kimai older than 2.66.0" }
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/invoices/documents/{id}",
+    "operationId": "delete_invoice_document",
+    "summary": "Delete invoice document",
+    "description": "Deletes an invoice DOCUMENT TEMPLATE FILE (a .docx/.ods/.twig renderer in the invoice document directory), not an invoice. Added in Kimai 2.66.0. Requires 'manage_invoice_template'. NOTE the id here is a STRING document name, not a numeric id -- this is the one invoice route without a \\d+ requirement upstream. HAND-AUTHORED from src/API/InvoiceController.php; verify the identifier against the Kimai UI before calling, since a wrong value cannot be distinguished from a missing one in the 404.",
+    "tags": ["Invoice"],
+    "deprecated": false,
+    "sinceVersion": 26600,
+    "pathParams": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": true,
+        "in": "path",
+        "description": "Invoice document identifier (a name, NOT a numeric id)"
+      }
+    ],
+    "params": [],
+    "bodySchema": null,
+    "bodyContentType": null,
+    "responses": {
+      "204": { "description": "Invoice document was deleted" },
+      "403": { "description": "Missing the manage_invoice_template permission" },
+      "404": { "description": "Document not found, or Kimai older than 2.66.0" }
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/invoices/templates/{id}",
+    "operationId": "delete_invoice_template",
+    "summary": "Delete invoice template",
+    "description": "Deletes an invoice TEMPLATE (the configured template entity that binds a document, a number generator and tax settings), not an invoice and not a document file. Added in Kimai 2.66.0. Requires 'manage_invoice_template'. Deleting a template in use affects future invoice generation for anything pointing at it. HAND-AUTHORED from src/API/InvoiceController.php.",
+    "tags": ["Invoice"],
+    "deprecated": false,
+    "sinceVersion": 26600,
+    "pathParams": [
+      {
+        "name": "id",
+        "type": "integer",
+        "required": true,
+        "in": "path",
+        "description": "Invoice template ID to delete",
+        "pattern": "\\d+"
+      }
+    ],
+    "params": [],
+    "bodySchema": null,
+    "bodyContentType": null,
+    "responses": {
+      "204": { "description": "Invoice template was deleted" },
+      "403": { "description": "Missing the manage_invoice_template permission" },
+      "404": { "description": "Template not found, or Kimai older than 2.66.0" }
+    }
+  }
+]

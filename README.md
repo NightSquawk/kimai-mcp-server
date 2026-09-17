@@ -8,7 +8,7 @@
 
 An MCP (Model Context Protocol) server for **Kimai**, connecting your self-hosted time tracking to AI tools.
 
-16 tools cover the entire Kimai API. 13 are curated tools over the surface you use every day (timesheets, plus the lookups a timesheet write needs); the other 3 are a generic catalog of all 91 API endpoints for everything else. See [Tools](#tools).
+16 tools cover the entire Kimai API. 13 are curated tools over the surface you use every day (timesheets, plus the lookups a timesheet write needs); the other 3 are a generic catalog of all 97 API endpoints for everything else. See [Tools](#tools).
 
 ## Quick start
 
@@ -141,6 +141,7 @@ File locations: `.mcp.json` in your project root (Claude Code), `claude_desktop_
 | `KIMAI_BASE_URL` | yes | | Your Kimai URL without a trailing slash, e.g. `https://example.kimai.cloud` |
 | `KIMAI_API_TOKEN` | yes | | API token generated in your Kimai user profile (API Access) |
 | `KIMAI_TIMEOUT_MS` | no | `30000` | HTTP timeout for Kimai API requests, minimum 1000 |
+| `KIMAI_VERSION` | no | *(auto-detected)* | Overrides the version gate, e.g. `2.64.0`. Normally unnecessary: the server reads `GET /api/version` once per process and caches it. Set this only for a fork, or a reverse proxy that shadows `/api/version`. See [Version gating](#version-gating). |
 | `KIMAI_ALLOW_DELETE` | no | `false` | Set to `true` to allow deletes. While unset or `false`, every delete refuses before contacting Kimai, whether it is attempted through `kimai_delete_timesheet` or through `kimai_call_endpoint`. Accepts `true/false/1/0/yes/no/on/off`; any other value fails at startup rather than defaulting to off. |
 
 ## Security & write safety
@@ -167,6 +168,20 @@ Before any of these runs, the server snapshots the dependent records into the ba
 
 > [!IMPORTANT]
 > The authorization fields and the environment gate are guardrails, not a security boundary. The env vars in your MCP config are real credentials, and an agent with shell access can bypass these tools and call the Kimai API directly. If you need a hard limit, enforce it at the source: give the token's Kimai user a role without delete permissions.
+
+## Version gating
+
+Kimai is self-hosted, so the catalog this server ships and the Kimai you point it at move independently. The catalog tracks a recent Kimai; your instance might be months behind it. Without a gate, an endpoint that does not exist on your version is offered, called, and answered with a bare `404` that looks identical to a wrong path or a broken catalog.
+
+So endpoints newer than the catalog's baseline carry the Kimai version they first appeared in, and the server checks it:
+
+- On the first catalog call, the server reads `GET /api/version` once and caches it for the process.
+- `kimai_call_endpoint` refuses an endpoint your Kimai is too old to have, **before opening a socket**, naming both versions: *"`get_favorite_timesheets` requires Kimai 2.66.0 or newer. The connected instance reports 2.65.0..."*
+- `kimai_list_endpoints` tags such endpoints `kimai-2.66.0+`, and `kimai_describe_endpoint` states the requirement.
+
+**The check fails open.** If `/api/version` is unreachable, blocked by a proxy, or returns a shape the server does not recognise, the gate is skipped entirely and the call proceeds exactly as it would have. An unreadable probe never disables a catalog that works. Set `KIMAI_VERSION` to pin the version yourself if your instance reports it incorrectly.
+
+**This only covers instances OLDER than the catalog.** The reverse — a Kimai NEWER than this server, with endpoints the catalog has never heard of — is not something version metadata can detect, because the catalog is the list of what is callable. Those endpoints are unreachable until the catalog is regenerated. If you hit one, please open an issue.
 
 ## Tools
 
@@ -198,7 +213,7 @@ kimai_delete_timesheet          Delete an entry                 (delete)
 ### Catalog (3)
 
 Everything else in the Kimai API, through three generic tools backed by a
-generated catalog of all 91 endpoints. Customers, projects, activities, teams,
+generated catalog of all 97 endpoints. Customers, projects, activities, teams,
 tags, users, invoices, rates, comments, meta fields, and the plugin endpoints
 are all created, updated, and deleted through here.
 
@@ -226,7 +241,7 @@ otherwise silently covers one person instead of the team).
 ### Why the split
 
 A tool costs context whether or not it is called: every tool's full schema sits
-in the model's context for the entire session. One tool per endpoint would be 91
+in the model's context for the entire session. One tool per endpoint would be 97
 tools and roughly 25,000 tokens of standing overhead. Three catalog tools cost
 about 700. The 13 curated tools are the ones worth paying for individually,
 because their schema descriptions prevent measured, silent failures that a

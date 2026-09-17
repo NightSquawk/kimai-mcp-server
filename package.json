@@ -1,7 +1,7 @@
 {
   "name": "@nightsquawktech/kimai-mcp-server",
-  "version": "0.3.0",
-  "description": "Kimai MCP server for Claude, Cursor, and AI agents: 16 tools covering the entire Kimai API. 13 curated time-tracking tools plus a 91-endpoint catalog, with per-call authorization, pre-write backups, cascade snapshots, and an environment gate on deletes.",
+  "version": "0.4.0",
+  "description": "Kimai MCP server for Claude, Cursor, and AI agents: 16 tools covering the entire Kimai API. 13 curated time-tracking tools plus a 97-endpoint catalog, with per-call authorization, pre-write backups, cascade snapshots, an environment gate on deletes, and a version gate that refuses endpoints the connected Kimai is too old to have.",
   "keywords": [
     "mcp",
     "mcp-server",

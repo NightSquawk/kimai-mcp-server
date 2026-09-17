@@ -5,6 +5,67 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-09-17
+
+The catalog knows which Kimai each endpoint needs, and six endpoints from Kimai
+2.66.0 are now reachable. Those are the same change: adding endpoints newer than
+the vendored spec is only safe once the server can tell an older instance that it
+does not have them.
+
+### Added
+
+- **Version gating.** Endpoints newer than the catalog's baseline carry the Kimai
+  version they first appeared in. The server reads `GET /api/version` once per
+  process, caches it, and `kimai_call_endpoint` refuses an endpoint the connected
+  instance is too old to have **before opening a socket**, naming both versions
+  rather than letting Kimai answer with a bare `404` that is indistinguishable
+  from a wrong path or a broken catalog. `kimai_list_endpoints` tags such
+  endpoints `kimai-2.66.0+` and `kimai_describe_endpoint` states the requirement.
+  The check **fails open**: an unreachable, proxied-away or unrecognised
+  `/api/version` skips the gate entirely rather than disabling a working catalog.
+- **`KIMAI_VERSION`**, an optional override that pins the instance version and
+  skips the probe. For forks and for proxies that shadow `/api/version`.
+- **Six endpoints from Kimai 2.66.0**, hand-authored in
+  `_source/version-added-endpoints.json` from upstream `src/API/*Controller.php`
+  and merged by the same loop and collision guard as the plugin entries:
+  `get_favorite_timesheets`, `post_favorite_timesheet`,
+  `delete_favorite_timesheet`, `delete_invoice`, `delete_invoice_document`, and
+  `delete_invoice_template`. Catalog goes from 91 to 97 endpoints, with a new
+  `Favorites` category.
+- **Self-maintaining version annotation.** The assembler diffs operationIds
+  against the previous catalog: when the spec version advances, any newly
+  appearing id gets `sinceVersion` set to the new spec's version automatically.
+  Skipped on a first build and when the version has not moved, so it never gates
+  a whole catalog behind its own baseline.
+- **Five smoke-test checks** for the gate, pinning the instance version via
+  `KIMAI_VERSION` so the too-old and new-enough runs differ in nothing but which
+  side of the floor they sit on.
+
+### Changed
+
+- `index.json` gains `baselineVersionId` (the version the spec was scraped from,
+  below which no endpoint needs a floor) and `targetVersionId` (the version an
+  instance needs for the whole catalog to be callable).
+
+### Notes
+
+- **This covers instances OLDER than the catalog only.** A Kimai NEWER than this
+  server, carrying endpoints the catalog has never heard of, is not detectable
+  from version metadata and stays unreachable until the catalog is regenerated.
+- `delete_favorite_timesheet` removes a favorite marker, not a timesheet, but is
+  still classified destructive and sits behind `KIMAI_ALLOW_DELETE`, because the
+  catalog classifies every `DELETE` that way by method. That rule is deliberately
+  blunt and this is the one place it currently overreaches.
+- The Kimai Cloud reminder that "API token authentication will be removed, migrate
+  to API keys" needs no action here. It links to Kimai's *API passwords* removal
+  notice: what is being retired is the legacy `X-AUTH-USER` / `X-AUTH-TOKEN`
+  scheme, and what that changelog calls an "API key" is the `Authorization:
+  Bearer` credential this server has always sent.
+- Work Contract manual working-time and vacation booking endpoints, also announced
+  for 2.66.0+, are **not** included. The bundle is closed-source, its routes are
+  in no public source, and every guessed path 404s on a licensed 2.67.0 instance.
+  See `_source/SPEC-SOURCES.txt`.
+
 ## [0.3.0] - 2026-08-21
 
 Kimai's whole API is now reachable, and the tool list got 76% smaller. Those

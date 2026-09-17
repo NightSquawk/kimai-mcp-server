@@ -4,10 +4,12 @@
   "apiPrefix": "/api",
   "defaultBaseUrl": "$KIMAI_BASE_URL",
   "authScheme": "Authorization: Bearer",
-  "endpointCount": 91,
-  "readCount": 40,
-  "writeCount": 51,
-  "destructiveCount": 18,
+  "baselineVersionId": 26500,
+  "targetVersionId": 26600,
+  "endpointCount": 97,
+  "readCount": 41,
+  "writeCount": 56,
+  "destructiveCount": 22,
   "categories": [
     "Absence",
     "Actions",
@@ -16,6 +18,7 @@
     "Default",
     "Expense",
     "Export",
+    "Favorites",
     "Invoice",
     "Project",
     "Tag",
@@ -426,6 +429,42 @@
       "destructive": true
     },
     {
+      "operationId": "get_favorite_timesheets",
+      "resource": "favorites",
+      "category": "Favorites",
+      "name": "List favorite timesheets",
+      "method": "GET",
+      "path": "/api/favorites/timesheets",
+      "description": "Returns the current user's favorite timesheets, the saved rows the Kimai UI offers as one-click restart targets. Added in Kimai 2.66.0. Requires the 'start_own_timesheet' permission in addition to API access. HAND-AUTHORED: this endpoint postdates the vendored spec, so its shape was taken from src/API/FavoritesController.php upstream rather than extracted. It takes no parameters and is not paginated.",
+      "writeOperation": false,
+      "destructive": false,
+      "sinceVersion": 26600
+    },
+    {
+      "operationId": "delete_favorite_timesheet",
+      "resource": "favorites",
+      "category": "Favorites",
+      "name": "Remove a timesheet from the favorites",
+      "method": "DELETE",
+      "path": "/api/favorites/timesheets/{id}",
+      "description": "Removes the favorite MARKER from one timesheet. Added in Kimai 2.66.0. THIS DOES NOT DELETE THE TIMESHEET -- the time record is untouched and only the current user's favorite flag is cleared, which is trivially undone by calling post_favorite_timesheet again. It is nonetheless classified destructive and sits behind KIMAI_ALLOW_DELETE, because the catalog classifies every DELETE that way by method; that is a deliberately blunt rule and this endpoint is the one place it currently overreaches. The caller must own the timesheet. HAND-AUTHORED from src/API/FavoritesController.php.",
+      "writeOperation": true,
+      "destructive": true,
+      "sinceVersion": 26600
+    },
+    {
+      "operationId": "post_favorite_timesheet",
+      "resource": "favorites",
+      "category": "Favorites",
+      "name": "Add a timesheet to the favorites",
+      "method": "POST",
+      "path": "/api/favorites/timesheets/{id}",
+      "description": "Marks one timesheet as a favorite for the current user. Added in Kimai 2.66.0. The caller must OWN the timesheet ('is_owner'), so this cannot favorite another user's row even with admin rights. Idempotent in effect: favoriting an already-favorited timesheet is not an error. HAND-AUTHORED from src/API/FavoritesController.php; takes no request body, the id in the path is the whole input.",
+      "writeOperation": true,
+      "destructive": false,
+      "sinceVersion": 26600
+    },
+    {
       "operationId": "get_invoices",
       "resource": "invoices",
       "category": "Invoice",
@@ -435,6 +474,18 @@
       "description": "Fetch invoices",
       "writeOperation": false,
       "destructive": false
+    },
+    {
+      "operationId": "delete_invoice",
+      "resource": "invoices",
+      "category": "Invoice",
+      "name": "Delete invoice",
+      "method": "DELETE",
+      "path": "/api/invoices/{id}",
+      "description": "Deletes an invoice AND its generated document, and releases the timesheets it covered back to un-invoiced. Added in Kimai 2.66.0. This is genuinely irreversible: the rendered document is removed from disk and the invoice number is consumed, so re-invoicing the same period produces a NEW number rather than restoring the old one. Requires the 'delete_invoice' permission. HAND-AUTHORED from src/API/InvoiceController.php.",
+      "writeOperation": true,
+      "destructive": true,
+      "sinceVersion": 26600
     },
     {
       "operationId": "get_invoice",
@@ -468,6 +519,30 @@
       "description": "Download invoice",
       "writeOperation": false,
       "destructive": false
+    },
+    {
+      "operationId": "delete_invoice_document",
+      "resource": "invoices",
+      "category": "Invoice",
+      "name": "Delete invoice document",
+      "method": "DELETE",
+      "path": "/api/invoices/documents/{id}",
+      "description": "Deletes an invoice DOCUMENT TEMPLATE FILE (a .docx/.ods/.twig renderer in the invoice document directory), not an invoice. Added in Kimai 2.66.0. Requires 'manage_invoice_template'. NOTE the id here is a STRING document name, not a numeric id -- this is the one invoice route without a \\d+ requirement upstream. HAND-AUTHORED from src/API/InvoiceController.php; verify the identifier against the Kimai UI before calling, since a wrong value cannot be distinguished from a missing one in the 404.",
+      "writeOperation": true,
+      "destructive": true,
+      "sinceVersion": 26600
+    },
+    {
+      "operationId": "delete_invoice_template",
+      "resource": "invoices",
+      "category": "Invoice",
+      "name": "Delete invoice template",
+      "method": "DELETE",
+      "path": "/api/invoices/templates/{id}",
+      "description": "Deletes an invoice TEMPLATE (the configured template entity that binds a document, a number generator and tax settings), not an invoice and not a document file. Added in Kimai 2.66.0. Requires 'manage_invoice_template'. Deleting a template in use affects future invoice generation for anything pointing at it. HAND-AUTHORED from src/API/InvoiceController.php.",
+      "writeOperation": true,
+      "destructive": true,
+      "sinceVersion": 26600
     },
     {
       "operationId": "get_projects",

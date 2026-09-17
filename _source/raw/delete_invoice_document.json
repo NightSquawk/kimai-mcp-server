@@ -1,0 +1,35 @@
+{
+  "method": "DELETE",
+  "path": "/api/invoices/documents/{id}",
+  "operationId": "delete_invoice_document",
+  "summary": "Delete invoice document",
+  "description": "Deletes an invoice DOCUMENT TEMPLATE FILE (a .docx/.ods/.twig renderer in the invoice document directory), not an invoice. Added in Kimai 2.66.0. Requires 'manage_invoice_template'. NOTE the id here is a STRING document name, not a numeric id -- this is the one invoice route without a \\d+ requirement upstream. HAND-AUTHORED from src/API/InvoiceController.php; verify the identifier against the Kimai UI before calling, since a wrong value cannot be distinguished from a missing one in the 404.",
+  "tags": [
+    "Invoice"
+  ],
+  "deprecated": false,
+  "sinceVersion": 26600,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "in": "path",
+      "description": "Invoice document identifier (a name, NOT a numeric id)"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Invoice document was deleted"
+    },
+    "403": {
+      "description": "Missing the manage_invoice_template permission"
+    },
+    "404": {
+      "description": "Document not found, or Kimai older than 2.66.0"
+    }
+  }
+}

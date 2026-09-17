@@ -7,6 +7,7 @@ import type { KimaiClient } from "../../services/kimai-client.js";
 import { writeMutationBackup } from "../../services/backups.js";
 import { collectAffectedTimesheets, collectChildren } from "../../services/cascade.js";
 import { formatApiError } from "../../services/errors.js";
+import { checkVersionRequirement, resolveInstanceVersion } from "../../services/version.js";
 import { makeToolResponse } from "../format.js";
 
 /**
@@ -16,6 +17,9 @@ import { makeToolResponse } from "../format.js";
  * it runs a fixed chain before it opens a socket:
  *
  *   1. Unknown operation_id      -> fuzzy-suggestion error, no network call.
+ *   1b. Endpoint newer than the  -> version error naming both versions, no
+ *       connected Kimai             network call. Skipped when the instance
+ *                                   version is unknown. See services/version.ts.
  *   2. Missing required path params -> named error, no network call.
  *   3. Parameter coercion         -> fix or refuse the query shapes Kimai
  *                                    mishandles silently (see below).
@@ -287,6 +291,17 @@ export function registerCallEndpointTool(server: McpServer, client: KimaiClient)
             `Call kimai_list_endpoints to discover endpoints.`
         );
       }
+
+      // 1b. Instance too old for this endpoint. No network call.
+      //
+      // Sits next to the unknown-id check because it answers the same question
+      // -- does this operation exist where we are pointed? -- and not next to
+      // the delete gate, which is about permission to do something that does
+      // exist. The one probe this needs is cached for the process, and the
+      // whole check is skipped when the version cannot be determined, so an
+      // unreadable /api/version costs nothing and blocks nothing.
+      const tooOld = checkVersionRequirement(spec, await resolveInstanceVersion(client));
+      if (tooOld) return fail(tooOld);
 
       // 2. Missing required path params. No network call.
       const suppliedPathParams = params.path_params ?? {};

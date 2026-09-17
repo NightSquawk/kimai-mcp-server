@@ -3,6 +3,7 @@ import { z } from "zod";
 import { loadEndpointSpec, loadEnrichment, loadIndex } from "../../catalog/endpoint-spec.js";
 import { ENV } from "../../constants.js";
 import { formatApiError } from "../../services/errors.js";
+import { formatVersionId } from "../../services/version.js";
 import { makeToolResponse } from "../format.js";
 
 /**
@@ -109,11 +110,25 @@ export function registerDescribeEndpointTool(server: McpServer): void {
           `Category: ${spec.category} | ${spec.writeOperation ? "WRITE" : "read"}` +
             `${spec.destructive ? " | DESTRUCTIVE" : ""}` +
             `${spec.deprecated ? " | DEPRECATED" : ""}` +
-            `${spec.pluginOnly ? " | PLUGIN-ONLY" : ""}`,
+            `${spec.pluginOnly ? " | PLUGIN-ONLY" : ""}` +
+            `${spec.sinceVersion ? ` | KIMAI ${formatVersionId(spec.sinceVersion)}+` : ""}`,
           ""
         ];
 
         if (spec.description) sections.push(spec.description, "");
+
+        if (spec.sinceVersion) {
+          // Stated as a requirement rather than a verdict: this tool promises not to
+          // contact Kimai, so it cannot know what the connected instance actually runs.
+          // kimai_call_endpoint does know, and refuses there before sending anything.
+          sections.push(
+            `Requires Kimai ${formatVersionId(spec.sinceVersion)} or newer. This endpoint does not ` +
+              `exist on older instances, where calling it returns 404. This tool does not contact ` +
+              `the server, so it cannot tell you which version yours runs; kimai_call_endpoint ` +
+              `checks that and refuses without sending a request if the instance is too old.`,
+            ""
+          );
+        }
 
         if (spec.pluginOnly) {
           sections.push(

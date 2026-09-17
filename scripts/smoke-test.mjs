@@ -117,7 +117,7 @@ async function main() {
   console.log(`         tools/list payload: ${payloadBytes} bytes across ${names.length} tools`);
 
   const list = await callTool(offline, "kimai_list_endpoints", {});
-  check("list_endpoints reports 91 endpoints", list.structured?.totals?.endpoints === 91,
+  check("list_endpoints reports 97 endpoints", list.structured?.totals?.endpoints === 97,
     `totals=${JSON.stringify(list.structured?.totals)}`);
   check("list_endpoints excludes REMOVED tombstones",
     !list.text.includes("post_customer_team"));
@@ -167,7 +167,55 @@ async function main() {
   check("the delete refusal states no request was sent",
     gatedDelete.text.includes("no request was sent"));
 
+  const favList = await callTool(offline, "kimai_list_endpoints", { search: "favorite" });
+  check("list_endpoints tags version-gated endpoints with their floor",
+    favList.structured?.endpoints?.some(
+      (e) => e.operation_id === "get_favorite_timesheets" && e.since_kimai_version === "2.66.0"),
+    favList.text.slice(0, 160));
+
+  const favDesc = await callTool(offline, "kimai_describe_endpoint", { operation_id: "delete_invoice" });
+  check("describe_endpoint states the version requirement",
+    favDesc.text.includes("Requires Kimai 2.66.0 or newer"), favDesc.text.slice(0, 160));
+
   offline.child.kill();
+
+  // -------------------------------------------------- OFFLINE, VERSION GATE
+  // KIMAI_VERSION pins the instance version WITHOUT a probe, so these two runs
+  // isolate the gate from everything else: same call, same dead base URL, and
+  // the only thing that changes is which side of the floor the instance sits.
+  // The too-old run must be refused by name; the new-enough run must get all
+  // the way to the transport, which is what proves the gate was the only thing
+  // stopping the first one.
+  console.log("\nOFFLINE: version gate (instance pinned via KIMAI_VERSION)\n");
+  const tooOld = await connect({
+    KIMAI_BASE_URL: "http://127.0.0.1:9",
+    KIMAI_API_TOKEN: "not-a-real-token",
+    KIMAI_ALLOW_DELETE: "false",
+    KIMAI_TIMEOUT_MS: "2000",
+    KIMAI_VERSION: "2.65.0",
+  });
+  const refused = await callTool(tooOld, "kimai_call_endpoint", { operation_id: "get_favorite_timesheets" });
+  check("call_endpoint refuses an endpoint newer than the instance",
+    refused.isError && refused.text.includes("requires Kimai 2.66.0 or newer"), refused.text.slice(0, 200));
+  check("the version refusal names the detected version and sends nothing",
+    refused.text.includes("2.65.0") && refused.text.includes("No request was sent"),
+    refused.text.slice(0, 200));
+  const ungated = await callTool(tooOld, "kimai_call_endpoint", { operation_id: "get_timesheets" });
+  check("an endpoint with no version floor is unaffected by the gate",
+    ungated.isError && !ungated.text.includes("requires Kimai"), ungated.text.slice(0, 140));
+  tooOld.child.kill();
+
+  const newEnough = await connect({
+    KIMAI_BASE_URL: "http://127.0.0.1:9",
+    KIMAI_API_TOKEN: "not-a-real-token",
+    KIMAI_ALLOW_DELETE: "false",
+    KIMAI_TIMEOUT_MS: "2000",
+    KIMAI_VERSION: "2.66.0",
+  });
+  const allowed = await callTool(newEnough, "kimai_call_endpoint", { operation_id: "get_favorite_timesheets" });
+  check("the same endpoint passes the gate on a new-enough instance",
+    allowed.isError && !allowed.text.includes("requires Kimai"), allowed.text.slice(0, 140));
+  newEnough.child.kill();
 
   // ------------------------------------------------------- OFFLINE, GATE ON
   // With the gate ON, an authorized delete must get PAST both gates and fail

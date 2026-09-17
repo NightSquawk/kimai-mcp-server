@@ -38,6 +38,10 @@ const SPEC_SUFFIX = "-openapi.json";
 // merge site near the bottom of extract() for why these cannot be extracted.
 const PLUGIN_SPEC_FILE = "plugin-endpoints.json";
 
+// Hand-authored entries for endpoints that postdate the vendored spec. See the merge site
+// near the bottom of extract() for why these are not simply extracted like everything else.
+const VERSION_SPEC_FILE = "version-added-endpoints.json";
+
 // OpenAPI 3 defines eight possible operation verbs per path item. The catalog's HttpMethod
 // type (src/catalog/endpoint-spec.ts) covers five. head/trace/options are skipped rather
 // than forced into a shape that has no slot for them.
@@ -230,7 +234,14 @@ function extract(root) {
   }
   const schemas = spec.components?.schemas ?? {};
 
-  const stats = { cycles: 0, depthLimited: 0, withBody: 0, synthesized: 0, plugin: 0 };
+  const stats = {
+    cycles: 0,
+    depthLimited: 0,
+    withBody: 0,
+    synthesized: 0,
+    plugin: 0,
+    versionAdded: 0,
+  };
   const operations = [];
   const seenIds = new Map(); // operationId -> "METHOD path" of first owner, for collision errors
 
@@ -315,7 +326,19 @@ function extract(root) {
   }
 
   // -------------------------------------------------------------------------------------
-  // Plugin endpoint merge.
+  // Hand-authored endpoint merges. Two files, one loop, two different reasons to exist.
+  //
+  // version-added-endpoints.json holds endpoints that POSTDATE the vendored spec. Kimai
+  // ships roughly monthly and the spec dump is an expensive manual procedure, so the
+  // catalog would otherwise lag the current release by however long it has been since the
+  // last scrape -- and because call_endpoint is catalog-bound, lagging means genuinely
+  // unreachable, not merely undocumented. These entries close that gap between scrapes.
+  // Each one carries sinceVersion so the runtime gate can refuse it on instances too old to
+  // have it; the plugin file's entries carry pluginOnly instead, because plugin
+  // availability is a licensing fact rather than a version one and the two do not overlap.
+  //
+  // Both are retired the same way: when a future spec dump finally contains the path, the
+  // collision guard below fails the build and names the entry to delete.
   //
   // Six endpoints (/api/expenses, /api/expenses/{id}, /api/tasks, /api/tasks/{id},
   // /api/absences, /api/public-holidays) ship only with paid Kimai plugins. The OSS docker
@@ -330,25 +353,57 @@ function extract(root) {
   // catalog from a newer OSS spec preserves them; if a future spec dump ever DOES contain
   // one of these paths, the collision guard above fires and this merge is what to delete.
   // -------------------------------------------------------------------------------------
-  const pluginPath = join(sourceDir, PLUGIN_SPEC_FILE);
-  if (existsSync(pluginPath)) {
-    const pluginOps = JSON.parse(readFileSync(pluginPath, "utf8"));
-    for (const op of pluginOps) {
+  // A hand-authored file's entries are already in the raw shape, so the merge is a copy plus
+  // the same two guards the extracted operations get. `decorate` is where the two files
+  // differ, and `validate` is where a file may demand a field the other does not.
+  const HAND_AUTHORED = [
+    {
+      file: PLUGIN_SPEC_FILE,
+      decorate: (op) => ({ ...op, pluginOnly: true }),
+      validate: () => null,
+      counter: "plugin",
+    },
+    {
+      file: VERSION_SPEC_FILE,
+      // sinceVersion already rides on the entry; nothing to add.
+      decorate: (op) => ({ ...op }),
+      // The whole point of this file is the version floor, so an entry without a usable one
+      // is a mistake worth failing the build over rather than silently shipping ungated.
+      validate: (op) =>
+        Number.isInteger(op.sinceVersion) && op.sinceVersion > 0
+          ? null
+          : `missing or non-integer sinceVersion (got ${JSON.stringify(op.sinceVersion)})`,
+      counter: "versionAdded",
+    },
+  ];
+
+  for (const { file, decorate, validate, counter } of HAND_AUTHORED) {
+    const filePath = join(sourceDir, file);
+    if (!existsSync(filePath)) continue;
+
+    for (const op of JSON.parse(readFileSync(filePath, "utf8"))) {
       if (!SAFE_ID.test(op.operationId)) {
         throw new Error(
-          `${PLUGIN_SPEC_FILE}: operationId "${op.operationId}" fails SAFE_ID (/^[a-z0-9_]+$/).`,
+          `${file}: operationId "${op.operationId}" fails SAFE_ID (/^[a-z0-9_]+$/).`,
         );
       }
+      const invalid = validate(op);
+      if (invalid) {
+        throw new Error(`${file}: operationId "${op.operationId}" ${invalid}.`);
+      }
+      // The collision guard is what makes these files self-retiring. Once a regenerated spec
+      // covers one of these paths, the build fails here and tells you to delete the entry,
+      // rather than quietly shipping a stale hand-authored copy alongside the extracted one.
       if (seenIds.has(op.operationId)) {
         throw new Error(
-          `${PLUGIN_SPEC_FILE}: operationId "${op.operationId}" (${op.method} ${op.path}) ` +
+          `${file}: operationId "${op.operationId}" (${op.method} ${op.path}) ` +
             `collides with ${seenIds.get(op.operationId)} from the extracted spec. The upstream ` +
             `spec now covers this endpoint, so its hand-authored entry should be deleted.`,
         );
       }
       seenIds.set(op.operationId, `${op.method} ${op.path}`);
-      operations.push({ ...op, pluginOnly: true });
-      stats.plugin++;
+      operations.push(decorate(op));
+      stats[counter]++;
       if (op.bodySchema) stats.withBody++;
     }
   }
@@ -370,7 +425,8 @@ function main() {
   const uniqueIds = new Set(operations.map((op) => op.operationId)).size;
   console.log(
     `${specFile}: ${operations.length} operations ` +
-      `(${operations.length - stats.plugin} extracted, ${stats.plugin} hand-authored plugin), ` +
+      `(${operations.length - stats.plugin - stats.versionAdded} extracted, ` +
+      `${stats.plugin} hand-authored plugin, ${stats.versionAdded} hand-authored version-added), ` +
       `${uniqueIds} unique operationIds, ${stats.synthesized} ids synthesized, ` +
       `${stats.withBody} with bodySchema, ${stats.cycles} cycles elided, ` +
       `${stats.depthLimited} hit the depth limit`,

@@ -1,0 +1,36 @@
+{
+  "method": "DELETE",
+  "path": "/api/invoices/templates/{id}",
+  "operationId": "delete_invoice_template",
+  "summary": "Delete invoice template",
+  "description": "Deletes an invoice TEMPLATE (the configured template entity that binds a document, a number generator and tax settings), not an invoice and not a document file. Added in Kimai 2.66.0. Requires 'manage_invoice_template'. Deleting a template in use affects future invoice generation for anything pointing at it. HAND-AUTHORED from src/API/InvoiceController.php.",
+  "tags": [
+    "Invoice"
+  ],
+  "deprecated": false,
+  "sinceVersion": 26600,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "integer",
+      "required": true,
+      "in": "path",
+      "description": "Invoice template ID to delete",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Invoice template was deleted"
+    },
+    "403": {
+      "description": "Missing the manage_invoice_template permission"
+    },
+    "404": {
+      "description": "Template not found, or Kimai older than 2.66.0"
+    }
+  }
+}

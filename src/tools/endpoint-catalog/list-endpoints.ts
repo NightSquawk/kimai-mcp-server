@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { loadIndex } from "../../catalog/endpoint-spec.js";
 import { formatApiError } from "../../services/errors.js";
+import { formatVersionId } from "../../services/version.js";
 import { makeToolResponse } from "../format.js";
 
 /**
@@ -131,7 +132,8 @@ export function registerListEndpointsTool(server: McpServer): void {
             description: e.description,
             write_operation: e.writeOperation,
             ...(e.destructive ? { destructive: true } : {}),
-            ...(e.pluginOnly ? { plugin_only: true } : {})
+            ...(e.pluginOnly ? { plugin_only: true } : {}),
+            ...(e.sinceVersion ? { since_kimai_version: formatVersionId(e.sinceVersion) } : {})
           }))
         };
 
@@ -148,7 +150,8 @@ export function registerListEndpointsTool(server: McpServer): void {
           const flags = [
             e.writeOperation ? "WRITE" : "read",
             ...(e.destructive ? ["DESTRUCTIVE"] : []),
-            ...(e.pluginOnly ? ["plugin-only"] : [])
+            ...(e.pluginOnly ? ["plugin-only"] : []),
+            ...(e.sinceVersion ? [`kimai-${formatVersionId(e.sinceVersion)}+`] : [])
           ].join(" ");
           return `- \`${e.operationId}\` [${flags}] ${e.method} ${e.path} -- ${e.name}`;
         });

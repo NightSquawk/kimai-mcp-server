@@ -146,6 +146,18 @@ export interface EndpointSpec {
    * catalog is wrong, and call_endpoint says so in its error text.
    */
   pluginOnly?: boolean;
+  /**
+   * Kimai versionId (major*10000 + minor*100 + patch) in which this endpoint
+   * FIRST appeared, e.g. 26600 for 2.66.0. Absent means "present in the
+   * baseline spec this catalog was extracted from", which is the common case
+   * and keeps the flag off the great majority of entries.
+   *
+   * Set only on endpoints newer than CatalogIndex.baselineVersionId. The
+   * assembler assigns it automatically by diffing operationIds against the
+   * previous catalog, so it stays correct on every regen without hand edits.
+   * services/version.ts turns it into a pre-flight refusal on older instances.
+   */
+  sinceVersion?: number;
 }
 
 /** The compact summary of one operation, stored inside CatalogIndex.endpoints. */
@@ -160,6 +172,8 @@ export interface IndexEntry {
   writeOperation: boolean;
   destructive: boolean;
   pluginOnly?: boolean;
+  /** Mirrors EndpointSpec.sinceVersion so list_endpoints can tag without a per-entry load. */
+  sinceVersion?: number;
 }
 
 /** The aggregate index, stored at index.json. */
@@ -167,6 +181,19 @@ export interface CatalogIndex {
   product: string;
   /** e.g. "Kimai 2.65.0 /api/doc apiDescriptionDocument" */
   generatedFrom: string;
+  /**
+   * versionId of the vendored spec the bulk of this catalog was extracted
+   * from, e.g. 26500. Every entry WITHOUT a sinceVersion is present at or
+   * below this version, which is what makes the absence of the flag meaningful
+   * rather than merely unknown.
+   */
+  baselineVersionId: number;
+  /**
+   * Highest sinceVersion carried by any entry, i.e. the Kimai version an
+   * instance needs to reach for the whole catalog to be callable. Equals
+   * baselineVersionId when no entry is annotated.
+   */
+  targetVersionId: number;
   /** Always "/api". */
   apiPrefix: string;
   /** "$KIMAI_BASE_URL" */

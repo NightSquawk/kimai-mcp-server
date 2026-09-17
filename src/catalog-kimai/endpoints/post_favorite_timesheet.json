@@ -1,0 +1,38 @@
+{
+  "operationId": "post_favorite_timesheet",
+  "resource": "favorites",
+  "category": "Favorites",
+  "name": "Add a timesheet to the favorites",
+  "method": "POST",
+  "path": "/api/favorites/timesheets/{id}",
+  "description": "Marks one timesheet as a favorite for the current user. Added in Kimai 2.66.0. The caller must OWN the timesheet ('is_owner'), so this cannot favorite another user's row even with admin rights. Idempotent in effect: favoriting an already-favorited timesheet is not an error. HAND-AUTHORED from src/API/FavoritesController.php; takes no request body, the id in the path is the whole input.",
+  "writeOperation": true,
+  "destructive": false,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "integer",
+      "required": true,
+      "in": "path",
+      "description": "Timesheet ID to add to the favorites",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the favorited timesheet entity"
+    },
+    "403": {
+      "description": "Not the owner of this timesheet, or missing start_own_timesheet"
+    },
+    "404": {
+      "description": "Timesheet not found, or Kimai older than 2.66.0"
+    }
+  },
+  "requestSample": "curl -X POST '$KIMAI_BASE_URL/api/favorites/timesheets/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'",
+  "sinceVersion": 26600
+}

@@ -1,0 +1,38 @@
+{
+  "operationId": "delete_favorite_timesheet",
+  "resource": "favorites",
+  "category": "Favorites",
+  "name": "Remove a timesheet from the favorites",
+  "method": "DELETE",
+  "path": "/api/favorites/timesheets/{id}",
+  "description": "Removes the favorite MARKER from one timesheet. Added in Kimai 2.66.0. THIS DOES NOT DELETE THE TIMESHEET -- the time record is untouched and only the current user's favorite flag is cleared, which is trivially undone by calling post_favorite_timesheet again. It is nonetheless classified destructive and sits behind KIMAI_ALLOW_DELETE, because the catalog classifies every DELETE that way by method; that is a deliberately blunt rule and this endpoint is the one place it currently overreaches. The caller must own the timesheet. HAND-AUTHORED from src/API/FavoritesController.php.",
+  "writeOperation": true,
+  "destructive": true,
+  "paramLocation": "query",
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "integer",
+      "required": true,
+      "in": "path",
+      "description": "Timesheet ID to remove from the favorites",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the un-favorited timesheet entity"
+    },
+    "403": {
+      "description": "Not the owner of this timesheet, or missing start_own_timesheet"
+    },
+    "404": {
+      "description": "Timesheet not found, or Kimai older than 2.66.0"
+    }
+  },
+  "requestSample": "curl -X DELETE '$KIMAI_BASE_URL/api/favorites/timesheets/{id}' -H 'Authorization: Bearer $KIMAI_API_TOKEN'",
+  "sinceVersion": 26600
+}

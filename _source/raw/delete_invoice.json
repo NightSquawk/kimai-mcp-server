@@ -1,0 +1,36 @@
+{
+  "method": "DELETE",
+  "path": "/api/invoices/{id}",
+  "operationId": "delete_invoice",
+  "summary": "Delete invoice",
+  "description": "Deletes an invoice AND its generated document, and releases the timesheets it covered back to un-invoiced. Added in Kimai 2.66.0. This is genuinely irreversible: the rendered document is removed from disk and the invoice number is consumed, so re-invoicing the same period produces a NEW number rather than restoring the old one. Requires the 'delete_invoice' permission. HAND-AUTHORED from src/API/InvoiceController.php.",
+  "tags": [
+    "Invoice"
+  ],
+  "deprecated": false,
+  "sinceVersion": 26600,
+  "pathParams": [
+    {
+      "name": "id",
+      "type": "integer",
+      "required": true,
+      "in": "path",
+      "description": "Invoice ID to delete",
+      "pattern": "\\d+"
+    }
+  ],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "204": {
+      "description": "Invoice and its document were deleted"
+    },
+    "403": {
+      "description": "Missing the delete_invoice permission"
+    },
+    "404": {
+      "description": "Invoice not found, or Kimai older than 2.66.0"
+    }
+  }
+}

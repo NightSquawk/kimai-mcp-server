@@ -64,6 +64,80 @@ function readGeneratedFrom() {
 }
 const generatedFrom = readGeneratedFrom();
 
+// --- version baseline ---
+//
+// Mirrors parseVersionId in src/services/version.ts, hand-synced for the same reason META
+// is: a build script cannot import TypeScript without a compile step. Kimai's own formula,
+// so the integers here land on the same scale as the versionId that GET /api/version
+// reports at runtime.
+function parseVersionId(version) {
+  const m = /^(\d+)\.(\d+)(?:\.(\d+))?/.exec(String(version).trim());
+  if (!m) return null;
+  return Number(m[1]) * 10_000 + Number(m[2]) * 100 + Number(m[3] ?? 0);
+}
+
+// The version= field of the SPEC-SOURCES.txt header line, as an integer. This is the floor
+// the catalog is built on: every endpoint the spec dump contained exists at this version, so
+// an entry with no sinceVersion needs none.
+function readBaselineVersionId() {
+  const m = /^kimai\s+.*\bversion=(\S+)/m.exec(
+    readFileSync(join(root, "_source", "SPEC-SOURCES.txt"), "utf8"),
+  );
+  const parsed = m ? parseVersionId(m[1]) : null;
+  if (parsed === null) {
+    throw new Error(`Could not parse a version= from the SPEC-SOURCES.txt header line`);
+  }
+  return parsed;
+}
+const baselineVersionId = readBaselineVersionId();
+
+/**
+ * The previous catalog, for the sinceVersion auto-assignment below.
+ *
+ * WHY THE DIFF EXISTS
+ * -------------------
+ * Annotating sinceVersion by hand would mean version archaeology across ~91 endpoints, and
+ * would rot the moment someone forgot. Instead: an operationId that was absent from the
+ * previous catalog and is present in a NEWER spec necessarily arrived somewhere in between,
+ * and the new spec's version is the tightest bound we can prove. So each regen labels its
+ * own additions and the annotation set grows correctly on its own.
+ *
+ * Two guards keep this honest. It is skipped when there is no previous catalog, because on a
+ * first build every endpoint is "new" and annotating all of them would gate the entire
+ * catalog behind its own baseline. And it is skipped when the spec version has not advanced,
+ * because then a newly-appearing id is a re-extraction artifact or a hand-authored addition,
+ * not evidence of a version floor.
+ */
+function readPreviousCatalog() {
+  const indexPath = join(outDir, "index.json");
+  if (!existsSync(indexPath)) return null;
+  try {
+    const prev = JSON.parse(readFileSync(indexPath, "utf8"));
+    if (!Array.isArray(prev.endpoints)) return null;
+    return {
+      ids: new Set(prev.endpoints.map((e) => e.operationId)),
+      baselineVersionId: Number.isInteger(prev.baselineVersionId) ? prev.baselineVersionId : null,
+    };
+  } catch {
+    return null; // Unreadable previous catalog is not a reason to fail a rebuild.
+  }
+}
+const previous = readPreviousCatalog();
+const canInferSince =
+  previous !== null &&
+  previous.baselineVersionId !== null &&
+  baselineVersionId > previous.baselineVersionId;
+
+/**
+ * sinceVersion for one operation. An explicit value on the raw entry always wins -- that is
+ * how _source/version-added-endpoints.json pins a floor the spec itself cannot tell us.
+ */
+function sinceVersionOf(raw, operationId) {
+  if (Number.isInteger(raw.sinceVersion) && raw.sinceVersion > 0) return raw.sinceVersion;
+  if (canInferSince && !previous.ids.has(operationId)) return baselineVersionId;
+  return undefined;
+}
+
 // --- derived-field helpers ---
 
 function titleCase(seg) {
@@ -165,6 +239,7 @@ const problems = [];
 const excluded = [];
 let deprecatedKept = 0;
 let pluginCount = 0;
+let versionGatedCount = 0;
 
 for (const f of files) {
   const raw = JSON.parse(readFileSync(join(rawDir, f), "utf8"));
@@ -207,6 +282,14 @@ for (const f of files) {
   if (raw.deprecated === true) spec.deprecated = true;
   if (raw.pluginOnly === true) spec.pluginOnly = true;
 
+  // Same "absent unless it says something" discipline: most endpoints predate the baseline
+  // and carry no floor, which is what makes the flag's presence informative.
+  const sinceVersion = sinceVersionOf(raw, operationId);
+  if (sinceVersion !== undefined) {
+    spec.sinceVersion = sinceVersion;
+    versionGatedCount++;
+  }
+
   // Sanity check: every {placeholder} in the path should have a matching pathParams entry.
   // The extractor owns producing these; this only catches an extractor/assembler mismatch.
   const placeholders = [...path.matchAll(/\{([^}]+)\}/g)].map((m) => m[1]);
@@ -230,6 +313,7 @@ for (const f of files) {
     destructive: spec.destructive,
   };
   if (spec.pluginOnly) entry.pluginOnly = true;
+  if (spec.sinceVersion !== undefined) entry.sinceVersion = spec.sinceVersion;
   indexEntries.push(entry);
 }
 
@@ -247,6 +331,11 @@ const index = {
   apiPrefix: META.apiPrefix,
   defaultBaseUrl: META.defaultBaseUrl,
   authScheme: META.authScheme,
+  baselineVersionId,
+  targetVersionId: indexEntries.reduce(
+    (max, e) => (e.sinceVersion !== undefined && e.sinceVersion > max ? e.sinceVersion : max),
+    baselineVersionId,
+  ),
   endpointCount: indexEntries.length,
   readCount: indexEntries.filter((e) => !e.writeOperation).length,
   writeCount: indexEntries.filter((e) => e.writeOperation).length,
@@ -279,6 +368,11 @@ console.log(`generatedFrom: ${generatedFrom}`);
 console.log(`endpoints:     ${index.endpointCount}  (read ${index.readCount} / write ${index.writeCount})`);
 console.log(`destructive:   ${index.destructiveCount}`);
 console.log(`plugin-only:   ${pluginCount}`);
+console.log(
+  `versions:      baseline ${baselineVersionId} / target ${index.targetVersionId}, ` +
+    `${versionGatedCount} endpoint(s) carry a sinceVersion floor` +
+    (canInferSince ? " (auto-inferred for new ids this regen)" : ""),
+);
 console.log(`deprecated:    ${deprecatedKept} kept (functional), ${excluded.length} excluded as REMOVED`);
 for (const e of excluded) console.log(`  - excluded ${e}`);
 console.log(`categories:    ${JSON.stringify(byCat)}`);

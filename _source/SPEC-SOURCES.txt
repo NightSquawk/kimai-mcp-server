@@ -56,6 +56,47 @@ hand-authored catalog entries:
   /api/absences          WorkContractBundle
   /api/public-holidays   WorkContractBundle
 
+ENDPOINTS ADDED AFTER THIS SPEC
+-------------------------------
+The version= field above is the catalog's BASELINE, not its coverage. Kimai ships roughly
+monthly and the scrape below is a manual multi-step procedure, so between scrapes the
+catalog would lag the current release -- and because kimai_call_endpoint is catalog-bound
+(an unknown operationId is refused without a network call), lagging means genuinely
+unreachable rather than merely undocumented.
+
+_source/version-added-endpoints.json closes that gap. Same raw shape as the plugin file,
+merged by the same loop in extract-openapi.mjs, with the same collision guard. The
+difference is that each entry carries `sinceVersion` (Kimai's own versionId scale:
+major*10000 + minor*100 + patch), which src/services/version.ts turns into a pre-flight
+refusal on instances too old to have the endpoint.
+
+Currently 6 entries, all added in Kimai 2.66.0 (26600), all verified against
+src/API/*Controller.php upstream rather than extracted:
+
+  GET    /api/favorites/timesheets        get_favorite_timesheets
+  POST   /api/favorites/timesheets/{id}   post_favorite_timesheet
+  DELETE /api/favorites/timesheets/{id}   delete_favorite_timesheet
+  DELETE /api/invoices/{id}               delete_invoice
+  DELETE /api/invoices/documents/{id}     delete_invoice_document
+  DELETE /api/invoices/templates/{id}     delete_invoice_template
+
+WHEN YOU RE-SCRAPE, DELETE THESE. A newer spec will contain these paths, the collision
+guard in extract-openapi.mjs will fail the build, and its error names the entry to remove.
+That failure is the design, not a bug: it is what stops a stale hand-authored copy shipping
+alongside the extracted one.
+
+The assembler then labels the regen's OWN additions automatically -- any operationId absent
+from the previous catalog, when the spec version has advanced, gets sinceVersion set to the
+new spec's version. So the annotation set maintains itself and only genuinely new
+between-scrape endpoints ever need hand-authoring here.
+
+NOT COVERED BY ANY OF THIS: Work Contract manual working-time and vacation booking
+endpoints, announced in the 2026-09-15 Kimai Cloud changelog. The bundle is closed-source
+paid code, the routes are not in any public source, and guessed paths (/api/working-times,
+/api/vacations, /api/work-contract, /api/working-time, /api/work-times) all 404 on a
+licensed 2.67.0 instance. They need an authenticated /api/doc scrape against an instance
+that has the bundle before they can be hand-authored.
+
 DEPRECATION HANDLING
 --------------------
 4 operations carry deprecated:true, but they are NOT equivalent:

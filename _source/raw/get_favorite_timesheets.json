@@ -1,0 +1,27 @@
+{
+  "method": "GET",
+  "path": "/api/favorites/timesheets",
+  "operationId": "get_favorite_timesheets",
+  "summary": "List favorite timesheets",
+  "description": "Returns the current user's favorite timesheets, the saved rows the Kimai UI offers as one-click restart targets. Added in Kimai 2.66.0. Requires the 'start_own_timesheet' permission in addition to API access. HAND-AUTHORED: this endpoint postdates the vendored spec, so its shape was taken from src/API/FavoritesController.php upstream rather than extracted. It takes no parameters and is not paginated.",
+  "tags": [
+    "Favorites"
+  ],
+  "deprecated": false,
+  "sinceVersion": 26600,
+  "pathParams": [],
+  "params": [],
+  "bodySchema": null,
+  "bodyContentType": null,
+  "responses": {
+    "200": {
+      "description": "Returns the collection of favorite timesheets for the current user"
+    },
+    "403": {
+      "description": "Missing the start_own_timesheet permission"
+    },
+    "404": {
+      "description": "Kimai older than 2.66.0: the favorites routes do not exist"
+    }
+  }
+}

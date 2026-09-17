@@ -1,11 +1,18 @@
 export const SERVER_NAME = "kimai-mcp-server";
-export const SERVER_VERSION = "0.3.0";
+export const SERVER_VERSION = "0.4.0";
 
 export const ENV = {
   baseUrl: "KIMAI_BASE_URL",
   apiToken: "KIMAI_API_TOKEN",
   timeoutMs: "KIMAI_TIMEOUT_MS",
-  allowDelete: "KIMAI_ALLOW_DELETE"
+  allowDelete: "KIMAI_ALLOW_DELETE",
+  /**
+   * Optional override for the version gate (services/version.ts), e.g. "2.64.0".
+   * When set and parseable it replaces the GET /api/version probe entirely.
+   * Only needed for forks, or for a reverse proxy that shadows /api/version:
+   * the probe is the normal path and needs no configuration.
+   */
+  kimaiVersion: "KIMAI_VERSION"
 } as const;
 
 export const DEFAULT_TIMEOUT_MS = 30_000;
