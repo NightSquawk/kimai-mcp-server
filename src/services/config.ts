@@ -1,6 +1,12 @@
-import "dotenv/config";
+import { config as loadDotenv } from "dotenv";
 import { DEFAULT_TIMEOUT_MS, ENV } from "../constants.js";
 import type { KimaiConfig } from "../types.js";
+
+// dotenv >=17 logs an "injected env" line by default; this is an MCP
+// stdio server so stray stdout/stderr chatter on every startup is
+// unwelcome noise for clients. `quiet: true` restores the pre-v17
+// silent-by-default behavior this code relied on.
+loadDotenv({ quiet: true });
 
 export function loadConfig(): KimaiConfig {
   const baseUrl = process.env[ENV.baseUrl]?.trim();
