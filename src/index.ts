@@ -4,6 +4,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { SERVER_NAME, SERVER_VERSION } from "./constants.js";
 import { KimaiClient } from "./services/kimai-client.js";
 import { loadConfig } from "./services/config.js";
+import { formatApiError } from "./services/errors.js";
 import { registerTools } from "./tools/index.js";
 
 async function main(): Promise<void> {
@@ -22,6 +23,9 @@ async function main(): Promise<void> {
 }
 
 main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : String(error));
+  // Route through formatApiError so a failure that carries the live axios
+  // request config (which includes the Authorization: Bearer <apiToken>
+  // header) is never written to stderr verbatim. See CodeQL js/clear-text-logging.
+  console.error(formatApiError(error));
   process.exit(1);
 });
