@@ -61,7 +61,6 @@ jobs:
             [[ "$version" == "$(node -p 'JSON.parse(require("fs").readFileSync("package.json")).version')" ]] || exit 1
             git merge-base --is-ancestor "$GITHUB_SHA" "origin/$DEFAULT_BRANCH"
             tags+=$'\n'"${image}:${version}"
-            if [[ "$version" != *-* ]]; then tags+=$'\n'"${image}:latest"; fi
           else
             tags+=$'\n'"${image}:latest"
           fi
